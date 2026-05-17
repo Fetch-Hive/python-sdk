@@ -5,7 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**error** | **str** |  | 
+**error** | **str** | Human-readable error description. | [optional] 
+**code** | **str** | Machine-readable error code. | [optional] 
 
 ## Example
 
