@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fetch-hive-sdk"
+version = "0.1.0"
+description = "Official Python SDK for the Fetch Hive API"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Fetch Hive", email = "hello@fetchhive.com" }]
+keywords = ["fetchhive", "ai", "agents", "workflows", "sdk"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-asyncio>=0.21",
+  "respx>=0.20",
+]
+
+[project.urls]
+Homepage = "https://fetchhive.com"
+Repository = "https://github.com/Fetch-Hive/python-sdk"
+Documentation = "https://docs.fetchhive.com"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fetch_hive_sdk"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
