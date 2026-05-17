@@ -15,8 +15,12 @@ Usage::
 
     # Streaming agent
     for chunk in client.invoke_agent_stream(agent="my-agent", message="Hello"):
-        if chunk.get("type") == "delta":
-            print(chunk.get("content", ""), end="", flush=True)
+        if chunk.get("type") == "response":
+            print(chunk.get("response", ""), end="", flush=True)
+        elif chunk.get("type") == "tool":
+            print(f"\n[Calling tool: {chunk.get('tool')}]")
+        elif chunk.get("type") == "usage":
+            print("\nUsage:", chunk["usage"])
 
 Async::
 

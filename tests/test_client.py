@@ -220,14 +220,14 @@ def test_ag3_optional_fields_included_when_provided():
 
 # ── S: Streaming ───────────────────────────────────────────────────────────────
 
-SSE_DELTA = b"data: {\"type\":\"delta\",\"content\":\"Hello\"}\n\ndata: [DONE]\n\n"
+SSE_RESPONSE = b"data: {\"type\":\"response\",\"response\":\"Hello\"}\n\ndata: [DONE]\n\n"
 
 
 @respx.mock
 def test_s1_invoke_prompt_stream():
     """S1 — invoke_prompt_stream sends streaming:true and yields events."""
     respx.post(f"{DEFAULT_BASE}/invoke").mock(
-        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_DELTA))
+        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_RESPONSE))
     )
 
     chunks = list(FetchHive(api_key="k").invoke_prompt_stream(deployment="d"))
@@ -235,14 +235,14 @@ def test_s1_invoke_prompt_stream():
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
     assert len(chunks) == 1
-    assert chunks[0]["content"] == "Hello"
+    assert chunks[0]["response"] == "Hello"
 
 
 @respx.mock
 def test_s2_invoke_agent_stream():
     """S2 — invoke_agent_stream sends streaming:true and yields events."""
     respx.post(f"{DEFAULT_BASE}/agent/invoke").mock(
-        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_DELTA))
+        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_RESPONSE))
     )
 
     chunks = list(FetchHive(api_key="k").invoke_agent_stream(agent="a", message="m"))
@@ -250,7 +250,7 @@ def test_s2_invoke_agent_stream():
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
     assert len(chunks) == 1
-    assert chunks[0]["content"] == "Hello"
+    assert chunks[0]["response"] == "Hello"
 
 
 @pytest.mark.asyncio
@@ -258,7 +258,7 @@ def test_s2_invoke_agent_stream():
 async def test_s3_async_invoke_prompt_stream():
     """S3 — ainvoke_prompt_stream (async) sends streaming:true and yields events."""
     respx.post(f"{DEFAULT_BASE}/invoke").mock(
-        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_DELTA))
+        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_RESPONSE))
     )
 
     chunks = []
@@ -268,7 +268,7 @@ async def test_s3_async_invoke_prompt_stream():
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
     assert len(chunks) == 1
-    assert chunks[0]["content"] == "Hello"
+    assert chunks[0]["response"] == "Hello"
 
 
 @pytest.mark.asyncio
@@ -276,7 +276,7 @@ async def test_s3_async_invoke_prompt_stream():
 async def test_s3_async_invoke_agent_stream():
     """S3 — ainvoke_agent_stream (async) sends streaming:true and yields events."""
     respx.post(f"{DEFAULT_BASE}/agent/invoke").mock(
-        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_DELTA))
+        return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_RESPONSE))
     )
 
     chunks = []
@@ -284,7 +284,7 @@ async def test_s3_async_invoke_agent_stream():
         chunks.append(chunk)
 
     assert len(chunks) == 1
-    assert chunks[0]["content"] == "Hello"
+    assert chunks[0]["response"] == "Hello"
 
 
 # ── E: Error handling ─────────────────────────────────────────────────────────

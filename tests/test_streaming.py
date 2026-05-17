@@ -54,8 +54,8 @@ def make_sse(events: list[dict], done: bool = True) -> str:
 
 class TestParseLine:
     def test_parses_valid_data_line(self):
-        result = _parse_line('data: {"type":"delta","content":"hi"}')
-        assert result == {"type": "delta", "content": "hi"}
+        result = _parse_line('data: {"type":"response","response":"hi"}')
+        assert result == {"type": "response", "response": "hi"}
 
     def test_returns_none_for_comment(self):
         assert _parse_line(": this is a comment") is None
@@ -79,23 +79,23 @@ class TestParseLine:
 class TestSse1Clean:
     def test_iter_sse_yields_events(self):
         text = make_sse([
-            {"type": "delta", "content": "Hello"},
-            {"type": "delta", "content": " world"},
-            {"type": "done", "request_id": "r1"},
+            {"type": "response", "response": "Hello"},
+            {"type": "response", "response": " world"},
+            {"type": "usage", "request_id": "r1", "usage": {"prompt_tokens": {"total_tokens": 10}, "completion_tokens": {"total_tokens": 5}, "total_tokens": 15}, "stop_reason": "completed"},
         ])
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 3
-        assert chunks[0]["content"] == "Hello"
-        assert chunks[2]["type"] == "done"
+        assert chunks[0]["response"] == "Hello"
+        assert chunks[2]["type"] == "usage"
 
     @pytest.mark.asyncio
     async def test_aiter_sse_yields_events(self):
-        text = make_sse([{"type": "delta", "content": "Hello"}])
+        text = make_sse([{"type": "response", "response": "Hello"}])
         chunks = []
         async for chunk in aiter_sse(FakeResponse([text])):
             chunks.append(chunk)
         assert len(chunks) == 1
-        assert chunks[0]["content"] == "Hello"
+        assert chunks[0]["response"] == "Hello"
 
 
 # ── SSE2: chunks split mid-line ───────────────────────────────────────────────
@@ -103,34 +103,34 @@ class TestSse1Clean:
 
 class TestSse2ChunkSplit:
     def test_reassembles_event_from_two_chunks(self):
-        full = 'data: {"type":"delta","content":"Hi"}\n\ndata: [DONE]\n\n'
+        full = 'data: {"type":"response","response":"Hi"}\n\ndata: [DONE]\n\n'
         part1 = full[:20]
         part2 = full[20:]
         chunks = list(iter_sse(FakeResponse([part1, part2])))
         assert len(chunks) == 1
-        assert chunks[0]["content"] == "Hi"
+        assert chunks[0]["response"] == "Hi"
 
     def test_reassembles_multiple_events_from_fragments(self):
         full = make_sse([
-            {"type": "delta", "content": "A"},
-            {"type": "delta", "content": "B"},
+            {"type": "response", "response": "A"},
+            {"type": "response", "response": "B"},
         ])
         # Split into 3-character pieces
         pieces = [full[i:i+3] for i in range(0, len(full), 3)]
         chunks = list(iter_sse(FakeResponse(pieces)))
         assert len(chunks) == 2
-        assert chunks[0]["content"] == "A"
-        assert chunks[1]["content"] == "B"
+        assert chunks[0]["response"] == "A"
+        assert chunks[1]["response"] == "B"
 
     @pytest.mark.asyncio
     async def test_async_reassembles_from_chunks(self):
-        full = 'data: {"type":"delta","content":"Hi"}\n\ndata: [DONE]\n\n'
+        full = 'data: {"type":"response","response":"Hi"}\n\ndata: [DONE]\n\n'
         part1, part2 = full[:18], full[18:]
         chunks = []
         async for chunk in aiter_sse(FakeResponse([part1, part2])):
             chunks.append(chunk)
         assert len(chunks) == 1
-        assert chunks[0]["content"] == "Hi"
+        assert chunks[0]["response"] == "Hi"
 
 
 # ── SSE3: non-data lines are skipped ─────────────────────────────────────────
@@ -138,17 +138,17 @@ class TestSse2ChunkSplit:
 
 class TestSse3SkipNonData:
     def test_skips_comment_lines(self):
-        text = ": comment\n" + make_sse([{"type": "delta", "content": "ok"}])
+        text = ": comment\n" + make_sse([{"type": "response", "response": "ok"}])
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 1
 
     def test_skips_blank_lines(self):
-        text = "\n\n" + make_sse([{"type": "delta", "content": "ok"}])
+        text = "\n\n" + make_sse([{"type": "response", "response": "ok"}])
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 1
 
     def test_skips_event_and_id_fields(self):
-        text = "event: message\nid: 1\n" + make_sse([{"type": "delta", "content": "ok"}])
+        text = "event: message\nid: 1\n" + make_sse([{"type": "response", "response": "ok"}])
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 1
 
@@ -160,21 +160,21 @@ class TestSse4MalformedJson:
     def test_continues_after_bad_line(self):
         import json
         text = (
-            f'data: {json.dumps({"type": "delta", "content": "before"})}\n\n'
+            f'data: {json.dumps({"type": "response", "response": "before"})}\n\n'
             "data: {this is not json}\n\n"
-            f'data: {json.dumps({"type": "delta", "content": "after"})}\n\n'
+            f'data: {json.dumps({"type": "response", "response": "after"})}\n\n'
             "data: [DONE]\n\n"
         )
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 2
-        assert chunks[0]["content"] == "before"
-        assert chunks[1]["content"] == "after"
+        assert chunks[0]["response"] == "before"
+        assert chunks[1]["response"] == "after"
 
     @pytest.mark.asyncio
     async def test_async_continues_after_bad_line(self):
         import json
         text = (
-            f'data: {json.dumps({"type": "delta", "content": "ok"})}\n\n'
+            f'data: {json.dumps({"type": "response", "response": "ok"})}\n\n'
             "data: {bad}\n\n"
             "data: [DONE]\n\n"
         )
@@ -182,7 +182,7 @@ class TestSse4MalformedJson:
         async for chunk in aiter_sse(FakeResponse([text])):
             chunks.append(chunk)
         assert len(chunks) == 1
-        assert chunks[0]["content"] == "ok"
+        assert chunks[0]["response"] == "ok"
 
 
 # ── SSE5: stops at [DONE] ─────────────────────────────────────────────────────
@@ -192,17 +192,17 @@ class TestSse5Done:
     def test_stops_at_done(self):
         import json
         text = (
-            f'data: {json.dumps({"content": "keep"})}\n\n'
+            f'data: {json.dumps({"type": "response", "response": "keep"})}\n\n'
             "data: [DONE]\n\n"
-            f'data: {json.dumps({"content": "drop"})}\n\n'
+            f'data: {json.dumps({"type": "response", "response": "drop"})}\n\n'
         )
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 1
-        assert chunks[0]["content"] == "keep"
+        assert chunks[0]["response"] == "keep"
 
     def test_completes_without_done(self):
         import json
-        text = f'data: {json.dumps({"content": "only"})}\n\n'
+        text = f'data: {json.dumps({"type": "response", "response": "only"})}\n\n'
         chunks = list(iter_sse(FakeResponse([text])))
         assert len(chunks) == 1
 

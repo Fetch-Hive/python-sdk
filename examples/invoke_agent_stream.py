@@ -15,11 +15,11 @@ for chunk in client.invoke_agent_stream(
     message="Tell me a short story",
 ):
     event_type = chunk.get("type")
-    if event_type == "delta":
-        print(chunk.get("content", ""), end="", flush=True)
-    elif event_type == "tool_start":
-        print(f"\n[Calling tool: {chunk.get('tool_name')}]")
-    elif event_type == "done":
+    if event_type == "response":
+        print(chunk.get("response", ""), end="", flush=True)
+    elif event_type == "tool":
+        print(f"\n[Calling tool: {chunk.get('tool')}]")
+    elif event_type == "usage":
         print("\n\n[Done]")
         if chunk.get("usage"):
             print("Usage:", chunk["usage"])

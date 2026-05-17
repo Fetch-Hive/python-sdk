@@ -38,8 +38,10 @@ for chunk in client.invoke_prompt_stream(
     deployment="my-prompt",
     inputs={"name": "Alice"},
 ):
-    if chunk.get("type") == "delta":
-        print(chunk.get("content", ""), end="", flush=True)
+    if chunk.get("type") == "response":
+        print(chunk.get("response", ""), end="", flush=True)
+    elif chunk.get("type") == "usage":
+        print("\nUsage:", chunk["usage"])
 ```
 
 ## Invoke a workflow
@@ -82,10 +84,12 @@ for chunk in client.invoke_agent_stream(
     message="What is the weather in London?",
     thread_id="session-abc123",  # optional — persist conversation history
 ):
-    if chunk.get("type") == "delta":
-        print(chunk.get("content", ""), end="", flush=True)
-    elif chunk.get("type") == "tool_start":
-        print(f"\n[Calling tool: {chunk.get('tool_name')}]")
+    if chunk.get("type") == "response":
+        print(chunk.get("response", ""), end="", flush=True)
+    elif chunk.get("type") == "tool":
+        print(f"\n[Calling tool: {chunk.get('tool')}]")
+    elif chunk.get("type") == "usage":
+        print("\nUsage:", chunk["usage"])
 ```
 
 ## Multimodal (image) inputs
@@ -110,10 +114,12 @@ async def main():
         message="Hello",
         thread_id="session-abc123",
     ):
-        if chunk.get("type") == "delta":
-            print(chunk.get("content", ""), end="", flush=True)
-        elif chunk.get("type") == "tool_start":
-            print(f"\n[Calling tool: {chunk.get('tool_name')}]")
+        if chunk.get("type") == "response":
+            print(chunk.get("response", ""), end="", flush=True)
+        elif chunk.get("type") == "tool":
+            print(f"\n[Calling tool: {chunk.get('tool')}]")
+        elif chunk.get("type") == "usage":
+            print("\nUsage:", chunk["usage"])
 
 asyncio.run(main())
 ```
@@ -146,7 +152,7 @@ client = FetchHive()  # picks up FETCH_HIVE_API_KEY automatically
 
 ## Version
 
-0.2.3
+0.2.4
 
 ## License
 
