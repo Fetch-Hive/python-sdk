@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fetch-hive-sdk"
-version = "0.1.6"
+version = "0.1.8"
 description = "Official Python SDK for the Fetch Hive API"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Fetch Hive", email = "hello@fetchhive.com" }]
+authors = [{ name = "Fetch Hive", email = "tom@fetchhive.com" }]
 keywords = ["fetchhive", "ai", "agents", "workflows", "sdk"]
 classifiers = [
   "Development Status :: 4 - Beta",
