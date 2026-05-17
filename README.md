@@ -52,7 +52,7 @@ run = client.invoke_workflow(
 print(run["status"], run.get("output"))
 ```
 
-## Async workflow
+## Invoke a workflow (async)
 
 ```python
 run = client.invoke_workflow(
@@ -62,6 +62,16 @@ run = client.invoke_workflow(
     callback_url="https://example.com/webhook",
 )
 print("Queued:", run["run_id"])
+```
+
+## Invoke an agent
+
+```python
+reply = client.invoke_agent(
+    agent="my-agent",
+    message="What is the weather in London?",
+)
+print(reply["response"])
 ```
 
 ## Invoke an agent (streaming)
@@ -78,6 +88,17 @@ for chunk in client.invoke_agent_stream(
         print(f"\n[Calling tool: {chunk.get('tool_name')}]")
 ```
 
+## Multimodal (image) inputs
+
+```python
+result = client.invoke_agent(
+    agent="vision-agent",
+    message="Describe this image",
+    image_urls=["https://example.com/photo.jpg"],
+)
+print(result["response"])
+```
+
 ## Async streaming
 
 ```python
@@ -87,34 +108,45 @@ async def main():
     async for chunk in client.ainvoke_agent_stream(
         agent="my-agent",
         message="Hello",
+        thread_id="session-abc123",
     ):
         if chunk.get("type") == "delta":
             print(chunk.get("content", ""), end="", flush=True)
+        elif chunk.get("type") == "tool_start":
+            print(f"\n[Calling tool: {chunk.get('tool_name')}]")
 
 asyncio.run(main())
 ```
 
-## Multimodal (image) inputs
-
-```python
-result = client.invoke_agent(
-    agent="vision-agent",
-    message="Describe this image",
-    image_urls=["https://example.com/photo.jpg"],
-)
-```
-
 ## Authentication
 
-Pass the API key to the constructor or set the `FETCH_HIVE_API_KEY` environment variable:
+Pass the API key to the constructor or set the environment variable:
 
 ```bash
 export FETCH_HIVE_API_KEY=fhk_...
 ```
 
+```python
+client = FetchHive()  # picks up FETCH_HIVE_API_KEY automatically
+```
+
+## Configuration
+
+| Option | Default | Description |
+|---|---|---|
+| `api_key` | `FETCH_HIVE_API_KEY` env var | Bearer token from the Fetch Hive dashboard |
+| `base_url` | `https://api.fetchhive.com/v1` | Override the API base URL |
+| `timeout` | `120` | Request timeout in seconds |
+
+## Links
+
+- [Fetch Hive dashboard](https://app.fetchhive.com)
+- [API documentation](https://docs.fetchhive.com)
+- [GitHub](https://github.com/Fetch-Hive/python-sdk)
+
 ## Version
 
-0.2.2
+0.2.3
 
 ## License
 
