@@ -13,6 +13,7 @@ print("Streaming agent response:\n")
 for chunk in client.invoke_agent_stream(
     agent="my-agent",
     message="Tell me a short story",
+    metadata={},
 ):
     event_type = chunk.get("type")
     if event_type == "response":

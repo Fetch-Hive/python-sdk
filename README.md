@@ -27,6 +27,7 @@ Get your API key from the [Fetch Hive dashboard](https://app.fetchhive.com).
 result = client.invoke_prompt(
     deployment="my-prompt",
     inputs={"name": "Alice", "topic": "machine learning"},
+    metadata={},
 )
 print(result["response"])
 ```
@@ -50,6 +51,7 @@ for chunk in client.invoke_prompt_stream(
 run = client.invoke_workflow(
     deployment="my-workflow",
     inputs={"customer_id": "42"},
+    metadata={},
 )
 print(run["status"], run.get("output"))
 ```
@@ -72,9 +74,14 @@ print("Queued:", run["run_id"])
 reply = client.invoke_agent(
     agent="my-agent",
     message="What is the weather in London?",
+    metadata={},
 )
 print(reply["response"])
 ```
+
+## Metadata
+
+Pass optional `metadata` on prompt, workflow, or agent invokes to attach flat audit fields for log display and filtering. Metadata values must be strings, numbers, booleans, or `None`.
 
 ## Invoke an agent (streaming)
 
@@ -152,7 +159,7 @@ client = FetchHive()  # picks up FETCH_HIVE_API_KEY automatically
 
 ## Version
 
-0.2.5
+0.2.6
 
 ## License
 

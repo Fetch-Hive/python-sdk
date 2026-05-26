@@ -11,6 +11,7 @@ client = FetchHive()
 result = client.invoke_prompt(
     deployment="my-prompt",
     inputs={"name": "Alice", "topic": "machine learning"},
+    metadata={},
 )
 
 print("Response:", result.get("response"))
