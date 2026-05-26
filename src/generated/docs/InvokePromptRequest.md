@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **inputs** | **Dict[str, object]** | Key-value pairs that are substituted into the prompt template. Values may be strings, numbers, booleans, arrays, or nested objects.  | [optional] 
 **streaming** | **bool** | When &#x60;true&#x60; the response is a Server-Sent Events stream rather than a single JSON body.  | [optional] [default to False]
 **user** | **str** | Optional opaque caller identifier for audit logging. | [optional] 
+**metadata** | [**Dict[str, MetadataValue]**](MetadataValue.md) | Flat caller-defined metadata stored separately from internal metadata for log display and filtering. Keys must be non-empty strings; values must be strings, numbers, booleans, or null. | [optional] 
 
 ## Example
 

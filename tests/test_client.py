@@ -126,12 +126,24 @@ def test_p3_optional_fields_omitted_when_absent():
 def test_p3_optional_fields_included_when_provided():
     """P3 — optional fields appear in body when provided."""
     respx.post(f"{DEFAULT_BASE}/invoke").mock(return_value=httpx.Response(200, json={"response": "ok"}))
-    FetchHive(api_key="k").invoke_prompt(deployment="d", variant="v2", inputs={"x": 1}, user="u1")
+    FetchHive(api_key="k").invoke_prompt(
+        deployment="d",
+        variant="v2",
+        inputs={"x": 1},
+        user="u1",
+        metadata={"customer_id": "cus_123", "trial": False, "invoice_count": 12, "region": None},
+    )
 
     body = json.loads(respx.calls.last.request.content)
     assert body["variant"] == "v2"
     assert body["inputs"] == {"x": 1}
     assert body["user"] == "u1"
+    assert body["metadata"] == {
+        "customer_id": "cus_123",
+        "trial": False,
+        "invoice_count": 12,
+        "region": None,
+    }
 
 
 # ── W: Workflow ────────────────────────────────────────────────────────────────
@@ -163,6 +175,21 @@ def test_w3_async_mode_builds_correct_block():
 
     body = json.loads(respx.calls.last.request.content)
     assert body["async"] == {"enabled": True, "callback_url": "https://example.com/cb"}
+
+
+@respx.mock
+def test_w4_metadata_passes_through():
+    """W4 — metadata appears in workflow invoke body."""
+    respx.post(f"{DEFAULT_BASE}/workflow/invoke").mock(
+        return_value=httpx.Response(200, json={"status": "completed"})
+    )
+    FetchHive(api_key="k").invoke_workflow(
+        deployment="d",
+        metadata={"customer_id": "cus_123", "invoice_count": 12},
+    )
+
+    body = json.loads(respx.calls.last.request.content)
+    assert body["metadata"] == {"customer_id": "cus_123", "invoice_count": 12}
 
 
 # ── AG: Agent ──────────────────────────────────────────────────────────────────
@@ -207,6 +234,7 @@ def test_ag3_optional_fields_included_when_provided():
         message="m",
         thread_id="tid",
         user="u1",
+        metadata={"customer_id": "cus_123", "trial": False},
         messages=[{"role": "user", "content": "prev"}],
         image_urls=["https://img.example.com/1.png"],
     )
@@ -214,6 +242,7 @@ def test_ag3_optional_fields_included_when_provided():
     body = json.loads(respx.calls.last.request.content)
     assert body["thread_id"] == "tid"
     assert body["user"] == "u1"
+    assert body["metadata"] == {"customer_id": "cus_123", "trial": False}
     assert len(body["messages"]) == 1
     assert len(body["image_urls"]) == 1
 
@@ -230,10 +259,16 @@ def test_s1_invoke_prompt_stream():
         return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_RESPONSE))
     )
 
-    chunks = list(FetchHive(api_key="k").invoke_prompt_stream(deployment="d"))
+    chunks = list(
+        FetchHive(api_key="k").invoke_prompt_stream(
+            deployment="d",
+            metadata={"plan": "enterprise"},
+        )
+    )
 
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
+    assert body["metadata"] == {"plan": "enterprise"}
     assert len(chunks) == 1
     assert chunks[0]["response"] == "Hello"
 
@@ -245,10 +280,17 @@ def test_s2_invoke_agent_stream():
         return_value=httpx.Response(200, stream=httpx.ByteStream(SSE_RESPONSE))
     )
 
-    chunks = list(FetchHive(api_key="k").invoke_agent_stream(agent="a", message="m"))
+    chunks = list(
+        FetchHive(api_key="k").invoke_agent_stream(
+            agent="a",
+            message="m",
+            metadata={"plan": "enterprise"},
+        )
+    )
 
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
+    assert body["metadata"] == {"plan": "enterprise"}
     assert len(chunks) == 1
     assert chunks[0]["response"] == "Hello"
 
@@ -262,11 +304,15 @@ async def test_s3_async_invoke_prompt_stream():
     )
 
     chunks = []
-    async for chunk in FetchHive(api_key="k").ainvoke_prompt_stream(deployment="d"):
+    async for chunk in FetchHive(api_key="k").ainvoke_prompt_stream(
+        deployment="d",
+        metadata={"plan": "enterprise"},
+    ):
         chunks.append(chunk)
 
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
+    assert body["metadata"] == {"plan": "enterprise"}
     assert len(chunks) == 1
     assert chunks[0]["response"] == "Hello"
 
@@ -280,9 +326,15 @@ async def test_s3_async_invoke_agent_stream():
     )
 
     chunks = []
-    async for chunk in FetchHive(api_key="k").ainvoke_agent_stream(agent="a", message="m"):
+    async for chunk in FetchHive(api_key="k").ainvoke_agent_stream(
+        agent="a",
+        message="m",
+        metadata={"plan": "enterprise"},
+    ):
         chunks.append(chunk)
 
+    body = json.loads(respx.calls.last.request.content)
+    assert body["metadata"] == {"plan": "enterprise"}
     assert len(chunks) == 1
     assert chunks[0]["response"] == "Hello"
 

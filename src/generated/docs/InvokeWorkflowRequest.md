@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **inputs** | **Dict[str, object]** | Input variables for the workflow. | [optional] 
 **var_async** | [**AsyncConfig**](AsyncConfig.md) |  | [optional] 
 **user** | **str** | Optional opaque caller identifier for audit logging. | [optional] 
+**metadata** | [**Dict[str, MetadataValue]**](MetadataValue.md) | Flat caller-defined metadata stored separately from internal metadata for log display and filtering. Keys must be non-empty strings; values must be strings, numbers, booleans, or null. | [optional] 
 
 ## Example
 

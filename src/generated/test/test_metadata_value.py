@@ -14,10 +14,10 @@
 
 import unittest
 
-from fetch_hive_sdk.models.agent_message import AgentMessage
+from fetch_hive_sdk.models.metadata_value import MetadataValue
 
-class TestAgentMessage(unittest.TestCase):
-    """AgentMessage unit test stubs"""
+class TestMetadataValue(unittest.TestCase):
+    """MetadataValue unit test stubs"""
 
     def setUp(self):
         pass
@@ -25,31 +25,24 @@ class TestAgentMessage(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def make_instance(self, include_optional) -> AgentMessage:
-        """Test AgentMessage
+    def make_instance(self, include_optional) -> MetadataValue:
+        """Test MetadataValue
             include_optional is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # uncomment below to create an instance of `AgentMessage`
+        # uncomment below to create an instance of `MetadataValue`
         """
-        model = AgentMessage()
+        model = MetadataValue()
         if include_optional:
-            return AgentMessage(
-                role = 'user',
-                content = '',
-                image_urls = [
-                    ''
-                    ]
+            return MetadataValue(
             )
         else:
-            return AgentMessage(
-                role = 'user',
-                content = '',
+            return MetadataValue(
         )
         """
 
-    def testAgentMessage(self):
-        """Test AgentMessage"""
+    def testMetadataValue(self):
+        """Test MetadataValue"""
         # inst_req_only = self.make_instance(include_optional=False)
         # inst_req_and_optional = self.make_instance(include_optional=True)
 

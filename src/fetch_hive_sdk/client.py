@@ -37,6 +37,8 @@ import httpx
 
 from .streaming import aiter_sse, iter_sse
 
+Metadata = dict[str, str | int | float | bool | None]
+
 DEFAULT_BASE_URL = "https://api.fetchhive.com/v1"
 
 
@@ -86,6 +88,7 @@ class FetchHive:
         variant: str = "",
         inputs: dict[str, Any] | None = None,
         user: str | None = None,
+        metadata: Metadata | None = None,
     ) -> dict[str, Any]:
         """Invoke a prompt deployment and return the full response."""
         body: dict[str, Any] = {"deployment": deployment, "streaming": False}
@@ -95,6 +98,8 @@ class FetchHive:
             body["inputs"] = inputs
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
 
         with httpx.Client(timeout=self._timeout) as client:
             resp = client.post(self._url("/invoke"), headers=self._headers, json=body)
@@ -108,6 +113,7 @@ class FetchHive:
         variant: str = "",
         inputs: dict[str, Any] | None = None,
         user: str | None = None,
+        metadata: Metadata | None = None,
     ) -> Generator[dict[str, Any], None, None]:
         """Invoke a prompt deployment and stream SSE events."""
         body: dict[str, Any] = {"deployment": deployment, "streaming": True}
@@ -117,6 +123,8 @@ class FetchHive:
             body["inputs"] = inputs
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
 
         with httpx.Client(timeout=self._timeout) as client:
             with client.stream("POST", self._url("/invoke"), headers=self._headers, json=body) as resp:
@@ -129,6 +137,7 @@ class FetchHive:
         variant: str = "",
         inputs: dict[str, Any] | None = None,
         user: str | None = None,
+        metadata: Metadata | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """Async: invoke a prompt deployment and stream SSE events."""
         body: dict[str, Any] = {"deployment": deployment, "streaming": True}
@@ -138,6 +147,8 @@ class FetchHive:
             body["inputs"] = inputs
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
 
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             async with client.stream("POST", self._url("/invoke"), headers=self._headers, json=body) as resp:
@@ -155,6 +166,7 @@ class FetchHive:
         async_mode: bool = False,
         callback_url: str | None = None,
         user: str | None = None,
+        metadata: Metadata | None = None,
     ) -> dict[str, Any]:
         """Invoke a workflow deployment (sync or async)."""
         body: dict[str, Any] = {"deployment": deployment}
@@ -164,6 +176,8 @@ class FetchHive:
             body["inputs"] = inputs
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
         if async_mode:
             body["async"] = {"enabled": True}
             if callback_url:
@@ -183,6 +197,7 @@ class FetchHive:
         message: str,
         thread_id: str = "",
         user: str | None = None,
+        metadata: Metadata | None = None,
         messages: list[dict[str, Any]] | None = None,
         image_urls: list[str] | None = None,
     ) -> dict[str, Any]:
@@ -192,6 +207,8 @@ class FetchHive:
             body["thread_id"] = thread_id
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
         if messages is not None:
             body["messages"] = messages
         if image_urls:
@@ -209,6 +226,7 @@ class FetchHive:
         message: str,
         thread_id: str = "",
         user: str | None = None,
+        metadata: Metadata | None = None,
         messages: list[dict[str, Any]] | None = None,
         image_urls: list[str] | None = None,
     ) -> Generator[dict[str, Any], None, None]:
@@ -218,6 +236,8 @@ class FetchHive:
             body["thread_id"] = thread_id
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
         if messages is not None:
             body["messages"] = messages
         if image_urls:
@@ -234,6 +254,7 @@ class FetchHive:
         message: str,
         thread_id: str = "",
         user: str | None = None,
+        metadata: Metadata | None = None,
         messages: list[dict[str, Any]] | None = None,
         image_urls: list[str] | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
@@ -243,6 +264,8 @@ class FetchHive:
             body["thread_id"] = thread_id
         if user is not None:
             body["user"] = user
+        if metadata is not None:
+            body["metadata"] = metadata
         if messages is not None:
             body["messages"] = messages
         if image_urls:
