@@ -1,6 +1,6 @@
 # SseChunk
 
-A single event in a Server-Sent Events stream. The `type` field is a runtime discriminator. Known values:   - `reasoning` — a reasoning / thinking chunk (prompt and agent streams)   - `response`  — a text chunk (prompt and agent streams)   - `tool`      — a tool invocation result (agent stream only)   - `usage`     — final token usage event; signals end of meaningful stream content   - `summary`   — auto-summarization event emitted before reasoning when a thread                   history was compressed (agent stream only)   - `error`     — server-side error during streaming  The stream is terminated by `data: [DONE]`, which is handled by the SSE parser and never surfaced as a chunk. 
+A single event in a Server-Sent Events stream. The `type` field is a runtime discriminator. Known values:   - `reasoning` — a reasoning / thinking chunk (prompt and agent streams)   - `response`  — a text chunk (prompt and agent streams)   - `tool`      — a tool invocation result (agent stream only)   - `artifact`  — a generated document or image descriptor (agent stream only)   - `usage`     — final token usage event; signals end of meaningful stream content   - `summary`   — auto-summarization event emitted before reasoning when a thread                   history was compressed (agent stream only)   - `error`     — server-side error during streaming  The stream is terminated by `data: [DONE]`, which is handled by the SSE parser and never surfaced as a chunk. 
 
 ## Properties
 
@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **tool_type** | **str** | Internal tool type identifier. Present for &#x60;tool&#x60; events. | [optional] 
 **tool_input** | **Dict[str, object]** | Parsed tool input arguments. Present for &#x60;tool&#x60; events. | [optional] 
 **observation** | **str** | Serialised JSON tool result. Present for &#x60;tool&#x60; events. | [optional] 
+**artifact** | [**GeneratedArtifact**](GeneratedArtifact.md) |  | [optional] 
 **stop_reason** | **str** | Reason the stream ended. Present on &#x60;usage&#x60; events (e.g. \&quot;completed\&quot;). | [optional] 
 **summary_text** | **str** | Compressed summary of the prior conversation. Present for &#x60;summary&#x60; events. | [optional] 
 **original_token_count** | **int** | Token count before summarization. Present for &#x60;summary&#x60; events. | [optional] 

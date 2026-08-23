@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **model** | **str** | Model used for this invocation. | [optional] 
 **usage** | [**TokenUsage**](TokenUsage.md) |  | [optional] 
 **tool_calls** | [**List[ToolInvocation]**](ToolInvocation.md) | Tool invocations made during this run (if any). | [optional] 
+**artifacts** | [**List[GeneratedArtifact]**](GeneratedArtifact.md) | Generated documents and images produced by completed artifact tools. | [optional] 
 
 ## Example
 

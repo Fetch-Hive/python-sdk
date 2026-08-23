@@ -102,7 +102,7 @@ class FetchHive:
             body["metadata"] = metadata
 
         with httpx.Client(timeout=self._timeout) as client:
-            resp = client.post(self._url("/invoke"), headers=self._headers, json=body)
+            resp = client.post(self._url("/prompt/invoke"), headers=self._headers, json=body)
             resp.raise_for_status()
             return resp.json()
 
@@ -127,7 +127,7 @@ class FetchHive:
             body["metadata"] = metadata
 
         with httpx.Client(timeout=self._timeout) as client:
-            with client.stream("POST", self._url("/invoke"), headers=self._headers, json=body) as resp:
+            with client.stream("POST", self._url("/prompt/invoke"), headers=self._headers, json=body) as resp:
                 yield from iter_sse(resp)
 
     async def ainvoke_prompt_stream(
@@ -151,7 +151,7 @@ class FetchHive:
             body["metadata"] = metadata
 
         async with httpx.AsyncClient(timeout=self._timeout) as client:
-            async with client.stream("POST", self._url("/invoke"), headers=self._headers, json=body) as resp:
+            async with client.stream("POST", self._url("/prompt/invoke"), headers=self._headers, json=body) as resp:
                 async for chunk in aiter_sse(resp):
                     yield chunk
 
@@ -200,6 +200,9 @@ class FetchHive:
         metadata: Metadata | None = None,
         messages: list[dict[str, Any]] | None = None,
         image_urls: list[str] | None = None,
+        attachments: list[str | dict[str, Any]] | None = None,
+        known_artifact_refs: list[str] | None = None,
+        artifact_refs: list[str] | None = None,
     ) -> dict[str, Any]:
         """Send a message to an agent and return the full response."""
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": False}
@@ -211,12 +214,134 @@ class FetchHive:
             body["metadata"] = metadata
         if messages is not None:
             body["messages"] = messages
-        if image_urls:
-            body["image_urls"] = image_urls
+        if attachments or image_urls:
+            body["attachments"] = attachments or image_urls
+        if known_artifact_refs:
+            body["known_artifact_refs"] = known_artifact_refs
+        if artifact_refs:
+            body["artifact_refs"] = artifact_refs
 
         with httpx.Client(timeout=self._timeout) as client:
             resp = client.post(self._url("/agent/invoke"), headers=self._headers, json=body)
             resp.raise_for_status()
+            return resp.json()
+
+    # ── Hive Agent ────────────────────────────────────────────────────────────
+
+    def invoke_hive_agent(
+        self,
+        *,
+        hive_agent: str,
+        objective: str,
+        callback_url: str,
+        sources: dict[str, Any] | None = None,
+        metadata: Metadata | None = None,
+    ) -> dict[str, Any]:
+        """Start a Hive Agent run asynchronously. Requires a callback URL."""
+        if not callback_url:
+            raise ValueError("callback_url is required for Hive Agent invocation")
+        body: dict[str, Any] = {
+            "hive_agent": hive_agent,
+            "objective": objective,
+            "async": {"enabled": True, "callback_url": callback_url},
+        }
+        if sources is not None:
+            body["sources"] = sources
+        if metadata is not None:
+            body["metadata"] = metadata
+        return self._request("POST", "/hive-agent/invoke", body)
+
+    # ── Public resources ──────────────────────────────────────────────────────
+
+    def get_request(self, id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/requests/{id}")
+
+    def list_knowledge_bases(self, workspace_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/knowledge_bases")
+
+    def get_knowledge_base(self, workspace_id: str, id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/knowledge_bases/{id}")
+
+    def create_knowledge_base(self, workspace_id: str, knowledge_base: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", f"/public/workspaces/{workspace_id}/knowledge_bases", {"knowledge_base": knowledge_base})
+
+    def update_knowledge_base(self, workspace_id: str, id: str, knowledge_base: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/public/workspaces/{workspace_id}/knowledge_bases/{id}", {"knowledge_base": knowledge_base})
+
+    def delete_knowledge_base(self, workspace_id: str, id: str) -> dict[str, Any]:
+        return self._request("DELETE", f"/public/workspaces/{workspace_id}/knowledge_bases/{id}")
+
+    def search_knowledge_base(self, workspace_id: str, id: str, **params: Any) -> dict[str, Any]:
+        return self._request("POST", f"/public/workspaces/{workspace_id}/knowledge_bases/{id}/search", params)
+
+    def list_knowledge_base_items(self, workspace_id: str, knowledge_base_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/knowledge_bases/{knowledge_base_id}/items")
+
+    def get_knowledge_base_item(self, workspace_id: str, knowledge_base_id: str, id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/knowledge_bases/{knowledge_base_id}/items/{id}")
+
+    def create_knowledge_base_item(self, workspace_id: str, knowledge_base_id: str, knowledge_base_item: dict[str, Any]) -> dict[str, Any]:
+        return self._request(
+            "POST",
+            f"/public/workspaces/{workspace_id}/knowledge_bases/{knowledge_base_id}/items",
+            {"knowledge_base_item": knowledge_base_item},
+        )
+
+    def update_knowledge_base_item(self, workspace_id: str, knowledge_base_id: str, id: str, knowledge_base_item: dict[str, Any]) -> dict[str, Any]:
+        return self._request(
+            "PATCH",
+            f"/public/workspaces/{workspace_id}/knowledge_bases/{knowledge_base_id}/items/{id}",
+            {"knowledge_base_item": knowledge_base_item},
+        )
+
+    def delete_knowledge_base_item(self, workspace_id: str, knowledge_base_id: str, id: str) -> dict[str, Any]:
+        return self._request("DELETE", f"/public/workspaces/{workspace_id}/knowledge_bases/{knowledge_base_id}/items/{id}")
+
+    def regenerate_knowledge_base_item(self, workspace_id: str, knowledge_base_id: str, id: str) -> dict[str, Any]:
+        return self._request("POST", f"/public/workspaces/{workspace_id}/knowledge_bases/{knowledge_base_id}/items/{id}/regenerate", {})
+
+    def list_agents(self, workspace_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/agents")
+
+    def get_agent(self, workspace_id: str, id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/agents/{id}")
+
+    def create_agent(self, workspace_id: str, agent: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", f"/public/workspaces/{workspace_id}/agents", {"agent": agent})
+
+    def update_agent(self, workspace_id: str, id: str, agent: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/public/workspaces/{workspace_id}/agents/{id}", {"agent": agent})
+
+    def delete_agent(self, workspace_id: str, id: str) -> dict[str, Any]:
+        return self._request("DELETE", f"/public/workspaces/{workspace_id}/agents/{id}")
+
+    def get_agent_chat(self, workspace_id: str, agent_id: str, chat_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}")
+
+    def create_agent_chat(self, workspace_id: str, agent_id: str, chat: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", f"/public/workspaces/{workspace_id}/agents/{agent_id}/chats", {"chat": chat})
+
+    def update_agent_chat(self, workspace_id: str, agent_id: str, chat_id: str, chat: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}", {"chat": chat})
+
+    def delete_agent_chat(self, workspace_id: str, agent_id: str, chat_id: str) -> dict[str, Any]:
+        return self._request("DELETE", f"/public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}")
+
+    def clear_agent_chat_messages(self, workspace_id: str, agent_id: str, chat_id: str) -> dict[str, Any]:
+        return self._request("PATCH", f"/public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}/clear_messages", {})
+
+    def list_agent_chat_messages(self, workspace_id: str, agent_id: str, chat_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}/messages")
+
+    def _request(self, method: str, path: str, json_body: dict[str, Any] | None = None) -> dict[str, Any]:
+        kwargs: dict[str, Any] = {"headers": self._headers}
+        if json_body is not None:
+            kwargs["json"] = json_body
+        with httpx.Client(timeout=self._timeout) as client:
+            resp = client.request(method, self._url(path), **kwargs)
+            resp.raise_for_status()
+            if not resp.content:
+                return {}
             return resp.json()
 
     def invoke_agent_stream(
@@ -229,6 +354,9 @@ class FetchHive:
         metadata: Metadata | None = None,
         messages: list[dict[str, Any]] | None = None,
         image_urls: list[str] | None = None,
+        attachments: list[str | dict[str, Any]] | None = None,
+        known_artifact_refs: list[str] | None = None,
+        artifact_refs: list[str] | None = None,
     ) -> Generator[dict[str, Any], None, None]:
         """Send a message to an agent and stream SSE events."""
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": True}
@@ -240,8 +368,12 @@ class FetchHive:
             body["metadata"] = metadata
         if messages is not None:
             body["messages"] = messages
-        if image_urls:
-            body["image_urls"] = image_urls
+        if attachments or image_urls:
+            body["attachments"] = attachments or image_urls
+        if known_artifact_refs:
+            body["known_artifact_refs"] = known_artifact_refs
+        if artifact_refs:
+            body["artifact_refs"] = artifact_refs
 
         with httpx.Client(timeout=self._timeout) as client:
             with client.stream("POST", self._url("/agent/invoke"), headers=self._headers, json=body) as resp:
@@ -257,6 +389,9 @@ class FetchHive:
         metadata: Metadata | None = None,
         messages: list[dict[str, Any]] | None = None,
         image_urls: list[str] | None = None,
+        attachments: list[str | dict[str, Any]] | None = None,
+        known_artifact_refs: list[str] | None = None,
+        artifact_refs: list[str] | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """Async: send a message to an agent and stream SSE events."""
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": True}
@@ -268,8 +403,12 @@ class FetchHive:
             body["metadata"] = metadata
         if messages is not None:
             body["messages"] = messages
-        if image_urls:
-            body["image_urls"] = image_urls
+        if attachments or image_urls:
+            body["attachments"] = attachments or image_urls
+        if known_artifact_refs:
+            body["known_artifact_refs"] = known_artifact_refs
+        if artifact_refs:
+            body["artifact_refs"] = artifact_refs
 
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             async with client.stream("POST", self._url("/agent/invoke"), headers=self._headers, json=body) as resp:

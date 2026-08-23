@@ -159,7 +159,7 @@ client = FetchHive()  # picks up FETCH_HIVE_API_KEY automatically
 
 ## Version
 
-0.2.6
+0.2.7
 
 ## License
 

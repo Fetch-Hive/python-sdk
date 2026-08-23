@@ -12,7 +12,9 @@ Name | Type | Description | Notes
 **user** | **str** | Optional opaque caller identifier for audit logging. | [optional] 
 **metadata** | [**Dict[str, MetadataValue]**](MetadataValue.md) | Flat caller-defined metadata stored separately from internal metadata for log display and filtering. Keys must be non-empty strings; values must be strings, numbers, booleans, or null. | [optional] 
 **messages** | [**List[AgentMessage]**](AgentMessage.md) | Ephemeral conversation history supplied by the caller. Not stored in the database. Takes precedence over &#x60;thread_id&#x60; history when both are provided.  | [optional] 
-**image_urls** | **List[str]** | HTTPS image URLs attached to the current &#x60;message&#x60; for multimodal inputs. All URLs must start with &#x60;https://&#x60;.  | [optional] 
+**attachments** | [**List[AgentAttachment]**](AgentAttachment.md) | External HTTPS documents/images or uploaded Asset descriptors for the current turn. Combined with &#x60;artifact_refs&#x60;, at most five items are accepted. External audio URLs are unsupported.  | [optional] 
+**known_artifact_refs** | **List[UUID]** | Account/workspace-owned Asset UUIDs available for lightweight discovery in caller-managed sessions. Persistent threads derive this list from the saved chat.  | [optional] 
+**artifact_refs** | **List[UUID]** | Artifact UUIDs explicitly selected for the current turn. In a caller-managed session every value must also appear in &#x60;known_artifact_refs&#x60;.  | [optional] 
 
 ## Example
 

@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **role** | **str** | Message author role. | 
 **content** | **str** | Text content of the message. | 
-**image_urls** | **List[str]** | HTTPS image URLs attached to this message. | [optional] 
+**attachments** | [**List[AgentAttachment]**](AgentAttachment.md) | Structured external document/image attachments for this historical message. | [optional] 
 
 ## Example
 
