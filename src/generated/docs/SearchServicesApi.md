@@ -4,12 +4,12 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**public_search_services_countries_get**](SearchServicesApi.md#public_search_services_countries_get) | **GET** /public/search_services/countries | List public search-service country catalogs
-[**public_search_services_service_countries_get**](SearchServicesApi.md#public_search_services_service_countries_get) | **GET** /public/search_services/{service}/countries | Retrieve public search-service country catalog
+[**get_public_search_services_countries**](SearchServicesApi.md#get_public_search_services_countries) | **GET** /public/search_services/countries | List public search-service country catalogs
+[**get_public_search_services_countries2**](SearchServicesApi.md#get_public_search_services_countries2) | **GET** /public/search_services/{service}/countries | Retrieve public search-service country catalog
 
 
-# **public_search_services_countries_get**
-> PublicSearchServicesCountriesGet200Response public_search_services_countries_get()
+# **get_public_search_services_countries**
+> GetPublicSearchServicesCountries200Response get_public_search_services_countries()
 
 List public search-service country catalogs
 
@@ -22,7 +22,7 @@ This endpoint is unauthenticated and exposes the value each service expects for 
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_search_services_countries_get200_response import PublicSearchServicesCountriesGet200Response
+from fetch_hive_sdk.models.get_public_search_services_countries200_response import GetPublicSearchServicesCountries200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -40,11 +40,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # List public search-service country catalogs
-        api_response = api_instance.public_search_services_countries_get()
-        print("The response of SearchServicesApi->public_search_services_countries_get:\n")
+        api_response = api_instance.get_public_search_services_countries()
+        print("The response of SearchServicesApi->get_public_search_services_countries:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling SearchServicesApi->public_search_services_countries_get: %s\n" % e)
+        print("Exception when calling SearchServicesApi->get_public_search_services_countries: %s\n" % e)
 ```
 
 
@@ -55,7 +55,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**PublicSearchServicesCountriesGet200Response**](PublicSearchServicesCountriesGet200Response.md)
+[**GetPublicSearchServicesCountries200Response**](GetPublicSearchServicesCountries200Response.md)
 
 ### Authorization
 
@@ -74,8 +74,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **public_search_services_service_countries_get**
-> PublicSearchServicesCountriesGet200ResponseServicesInner public_search_services_service_countries_get(service)
+# **get_public_search_services_countries2**
+> GetPublicSearchServicesCountries200ResponseServicesInner get_public_search_services_countries2(service)
 
 Retrieve public search-service country catalog
 
@@ -88,7 +88,7 @@ Use each country object's `value` field when configuring that service.
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_search_services_countries_get200_response_services_inner import PublicSearchServicesCountriesGet200ResponseServicesInner
+from fetch_hive_sdk.models.get_public_search_services_countries200_response_services_inner import GetPublicSearchServicesCountries200ResponseServicesInner
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -107,11 +107,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Retrieve public search-service country catalog
-        api_response = api_instance.public_search_services_service_countries_get(service)
-        print("The response of SearchServicesApi->public_search_services_service_countries_get:\n")
+        api_response = api_instance.get_public_search_services_countries2(service)
+        print("The response of SearchServicesApi->get_public_search_services_countries2:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling SearchServicesApi->public_search_services_service_countries_get: %s\n" % e)
+        print("Exception when calling SearchServicesApi->get_public_search_services_countries2: %s\n" % e)
 ```
 
 
@@ -125,7 +125,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicSearchServicesCountriesGet200ResponseServicesInner**](PublicSearchServicesCountriesGet200ResponseServicesInner.md)
+[**GetPublicSearchServicesCountries200ResponseServicesInner**](GetPublicSearchServicesCountries200ResponseServicesInner.md)
 
 ### Authorization
 

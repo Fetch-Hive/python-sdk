@@ -4,11 +4,11 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**public_models_get**](ModelsApi.md#public_models_get) | **GET** /public/models | List active models
+[**get_public_models**](ModelsApi.md#get_public_models) | **GET** /public/models | List active models
 
 
-# **public_models_get**
-> List[PublicModelsGet200ResponseInner] public_models_get()
+# **get_public_models**
+> List[GetPublicModels200ResponseInner] get_public_models()
 
 List active models
 
@@ -30,7 +30,7 @@ models that generate images. `is_vision` means a model accepts image input;
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_models_get200_response_inner import PublicModelsGet200ResponseInner
+from fetch_hive_sdk.models.get_public_models200_response_inner import GetPublicModels200ResponseInner
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -57,11 +57,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # List active models
-        api_response = api_instance.public_models_get()
-        print("The response of ModelsApi->public_models_get:\n")
+        api_response = api_instance.get_public_models()
+        print("The response of ModelsApi->get_public_models:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling ModelsApi->public_models_get: %s\n" % e)
+        print("Exception when calling ModelsApi->get_public_models: %s\n" % e)
 ```
 
 
@@ -72,7 +72,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**List[PublicModelsGet200ResponseInner]**](PublicModelsGet200ResponseInner.md)
+[**List[GetPublicModels200ResponseInner]**](GetPublicModels200ResponseInner.md)
 
 ### Authorization
 

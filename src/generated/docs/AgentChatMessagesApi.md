@@ -4,11 +4,11 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get**](AgentChatMessagesApi.md#public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get) | **GET** /public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}/messages | List messages in a chat
+[**get_public_workspaces_agents_chats_messages**](AgentChatMessagesApi.md#get_public_workspaces_agents_chats_messages) | **GET** /public/workspaces/{workspace_id}/agents/{agent_id}/chats/{chat_id}/messages | List messages in a chat
 
 
-# **public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get**
-> PublicWorkspacesWorkspaceIdAgentsAgentIdChatsChatIdMessagesGet200Response public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get(workspace_id, agent_id, chat_id)
+# **get_public_workspaces_agents_chats_messages**
+> GetPublicWorkspacesAgentsChatsMessages200Response get_public_workspaces_agents_chats_messages(workspace_id, agent_id, chat_id)
 
 List messages in a chat
 
@@ -20,7 +20,7 @@ Returns messages in the chat ordered chronologically (oldest first).
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get200_response import PublicWorkspacesWorkspaceIdAgentsAgentIdChatsChatIdMessagesGet200Response
+from fetch_hive_sdk.models.get_public_workspaces_agents_chats_messages200_response import GetPublicWorkspacesAgentsChatsMessages200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -50,11 +50,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # List messages in a chat
-        api_response = api_instance.public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get(workspace_id, agent_id, chat_id)
-        print("The response of AgentChatMessagesApi->public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get:\n")
+        api_response = api_instance.get_public_workspaces_agents_chats_messages(workspace_id, agent_id, chat_id)
+        print("The response of AgentChatMessagesApi->get_public_workspaces_agents_chats_messages:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AgentChatMessagesApi->public_workspaces_workspace_id_agents_agent_id_chats_chat_id_messages_get: %s\n" % e)
+        print("Exception when calling AgentChatMessagesApi->get_public_workspaces_agents_chats_messages: %s\n" % e)
 ```
 
 
@@ -70,7 +70,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdAgentsAgentIdChatsChatIdMessagesGet200Response**](PublicWorkspacesWorkspaceIdAgentsAgentIdChatsChatIdMessagesGet200Response.md)
+[**GetPublicWorkspacesAgentsChatsMessages200Response**](GetPublicWorkspacesAgentsChatsMessages200Response.md)
 
 ### Authorization
 

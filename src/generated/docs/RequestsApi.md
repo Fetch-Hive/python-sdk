@@ -4,11 +4,11 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**public_requests_id_get**](RequestsApi.md#public_requests_id_get) | **GET** /public/requests/{id} | Get a request
+[**get_public_requests**](RequestsApi.md#get_public_requests) | **GET** /public/requests/{id} | Get a request
 
 
-# **public_requests_id_get**
-> PublicRequestsIdGet200Response public_requests_id_get(id)
+# **get_public_requests**
+> GetPublicRequests200Response get_public_requests(id)
 
 Get a request
 
@@ -23,7 +23,7 @@ Pass the `request_id` returned when you invoked a prompt, workflow, agent, or Hi
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_requests_id_get200_response import PublicRequestsIdGet200Response
+from fetch_hive_sdk.models.get_public_requests200_response import GetPublicRequests200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -51,11 +51,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Get a request
-        api_response = api_instance.public_requests_id_get(id)
-        print("The response of RequestsApi->public_requests_id_get:\n")
+        api_response = api_instance.get_public_requests(id)
+        print("The response of RequestsApi->get_public_requests:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling RequestsApi->public_requests_id_get: %s\n" % e)
+        print("Exception when calling RequestsApi->get_public_requests: %s\n" % e)
 ```
 
 
@@ -69,7 +69,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicRequestsIdGet200Response**](PublicRequestsIdGet200Response.md)
+[**GetPublicRequests200Response**](GetPublicRequests200Response.md)
 
 ### Authorization
 

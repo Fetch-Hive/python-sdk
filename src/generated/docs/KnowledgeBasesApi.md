@@ -4,96 +4,16 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**public_workspaces_workspace_id_knowledge_bases_get**](KnowledgeBasesApi.md#public_workspaces_workspace_id_knowledge_bases_get) | **GET** /public/workspaces/{workspace_id}/knowledge_bases | List public workspace knowledge bases
-[**public_workspaces_workspace_id_knowledge_bases_id_delete**](KnowledgeBasesApi.md#public_workspaces_workspace_id_knowledge_bases_id_delete) | **DELETE** /public/workspaces/{workspace_id}/knowledge_bases/{id} | Delete a knowledge base
-[**public_workspaces_workspace_id_knowledge_bases_id_get**](KnowledgeBasesApi.md#public_workspaces_workspace_id_knowledge_bases_id_get) | **GET** /public/workspaces/{workspace_id}/knowledge_bases/{id} | Get a knowledge base
-[**public_workspaces_workspace_id_knowledge_bases_id_patch**](KnowledgeBasesApi.md#public_workspaces_workspace_id_knowledge_bases_id_patch) | **PATCH** /public/workspaces/{workspace_id}/knowledge_bases/{id} | Update a knowledge base
-[**public_workspaces_workspace_id_knowledge_bases_id_search_post**](KnowledgeBasesApi.md#public_workspaces_workspace_id_knowledge_bases_id_search_post) | **POST** /public/workspaces/{workspace_id}/knowledge_bases/{id}/search | Search a knowledge base
-[**public_workspaces_workspace_id_knowledge_bases_post**](KnowledgeBasesApi.md#public_workspaces_workspace_id_knowledge_bases_post) | **POST** /public/workspaces/{workspace_id}/knowledge_bases | Create a knowledge base
+[**delete_public_workspaces_knowledge_bases**](KnowledgeBasesApi.md#delete_public_workspaces_knowledge_bases) | **DELETE** /public/workspaces/{workspace_id}/knowledge_bases/{id} | Delete a knowledge base
+[**get_public_workspaces_knowledge_bases**](KnowledgeBasesApi.md#get_public_workspaces_knowledge_bases) | **GET** /public/workspaces/{workspace_id}/knowledge_bases | List public workspace knowledge bases
+[**get_public_workspaces_knowledge_bases2**](KnowledgeBasesApi.md#get_public_workspaces_knowledge_bases2) | **GET** /public/workspaces/{workspace_id}/knowledge_bases/{id} | Get a knowledge base
+[**patch_public_workspaces_knowledge_bases**](KnowledgeBasesApi.md#patch_public_workspaces_knowledge_bases) | **PATCH** /public/workspaces/{workspace_id}/knowledge_bases/{id} | Update a knowledge base
+[**post_public_workspaces_knowledge_bases**](KnowledgeBasesApi.md#post_public_workspaces_knowledge_bases) | **POST** /public/workspaces/{workspace_id}/knowledge_bases | Create a knowledge base
+[**post_public_workspaces_knowledge_bases_search**](KnowledgeBasesApi.md#post_public_workspaces_knowledge_bases_search) | **POST** /public/workspaces/{workspace_id}/knowledge_bases/{id}/search | Search a knowledge base
 
 
-# **public_workspaces_workspace_id_knowledge_bases_get**
-> PublicWorkspacesWorkspaceIdKnowledgeBasesGet200Response public_workspaces_workspace_id_knowledge_bases_get(workspace_id)
-
-List public workspace knowledge bases
-
-Returns knowledge bases scoped to the requested public API workspace.
-
-### Example
-
-* Bearer (JWT) Authentication (bearer_auth):
-
-```python
-import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_get200_response import PublicWorkspacesWorkspaceIdKnowledgeBasesGet200Response
-from fetch_hive_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to https://api.fetchhive.com/v1
-# See configuration.py for a list of all supported configuration parameters.
-configuration = fetch_hive_sdk.Configuration(
-    host = "https://api.fetchhive.com/v1"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearer_auth
-configuration = fetch_hive_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with fetch_hive_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = fetch_hive_sdk.KnowledgeBasesApi(api_client)
-    workspace_id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Workspace UUID
-
-    try:
-        # List public workspace knowledge bases
-        api_response = api_instance.public_workspaces_workspace_id_knowledge_bases_get(workspace_id)
-        print("The response of KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_get:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_get: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **workspace_id** | **UUID**| Workspace UUID | 
-
-### Return type
-
-[**PublicWorkspacesWorkspaceIdKnowledgeBasesGet200Response**](PublicWorkspacesWorkspaceIdKnowledgeBasesGet200Response.md)
-
-### Authorization
-
-[bearer_auth](../README.md#bearer_auth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | knowledge bases returned |  -  |
-**401** | unauthorized |  -  |
-**404** | workspace not found |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **public_workspaces_workspace_id_knowledge_bases_id_delete**
-> PublicWorkspacesWorkspaceIdKnowledgeBasesIdDelete200Response public_workspaces_workspace_id_knowledge_bases_id_delete(workspace_id, id)
+# **delete_public_workspaces_knowledge_bases**
+> DeletePublicWorkspacesKnowledgeBases200Response delete_public_workspaces_knowledge_bases(workspace_id, id)
 
 Delete a knowledge base
 
@@ -105,7 +25,7 @@ Marks a knowledge base for deletion. Cleanup continues asynchronously in the bac
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_id_delete200_response import PublicWorkspacesWorkspaceIdKnowledgeBasesIdDelete200Response
+from fetch_hive_sdk.models.delete_public_workspaces_knowledge_bases200_response import DeletePublicWorkspacesKnowledgeBases200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -134,11 +54,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Delete a knowledge base
-        api_response = api_instance.public_workspaces_workspace_id_knowledge_bases_id_delete(workspace_id, id)
-        print("The response of KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_delete:\n")
+        api_response = api_instance.delete_public_workspaces_knowledge_bases(workspace_id, id)
+        print("The response of KnowledgeBasesApi->delete_public_workspaces_knowledge_bases:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_delete: %s\n" % e)
+        print("Exception when calling KnowledgeBasesApi->delete_public_workspaces_knowledge_bases: %s\n" % e)
 ```
 
 
@@ -153,7 +73,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdKnowledgeBasesIdDelete200Response**](PublicWorkspacesWorkspaceIdKnowledgeBasesIdDelete200Response.md)
+[**DeletePublicWorkspacesKnowledgeBases200Response**](DeletePublicWorkspacesKnowledgeBases200Response.md)
 
 ### Authorization
 
@@ -173,8 +93,88 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **public_workspaces_workspace_id_knowledge_bases_id_get**
-> PublicWorkspacesWorkspaceIdKnowledgeBasesIdGet200Response public_workspaces_workspace_id_knowledge_bases_id_get(workspace_id, id)
+# **get_public_workspaces_knowledge_bases**
+> GetPublicWorkspacesKnowledgeBases200Response get_public_workspaces_knowledge_bases(workspace_id)
+
+List public workspace knowledge bases
+
+Returns knowledge bases scoped to the requested public API workspace.
+
+### Example
+
+* Bearer (JWT) Authentication (bearer_auth):
+
+```python
+import fetch_hive_sdk
+from fetch_hive_sdk.models.get_public_workspaces_knowledge_bases200_response import GetPublicWorkspacesKnowledgeBases200Response
+from fetch_hive_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.fetchhive.com/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = fetch_hive_sdk.Configuration(
+    host = "https://api.fetchhive.com/v1"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization (JWT): bearer_auth
+configuration = fetch_hive_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with fetch_hive_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = fetch_hive_sdk.KnowledgeBasesApi(api_client)
+    workspace_id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Workspace UUID
+
+    try:
+        # List public workspace knowledge bases
+        api_response = api_instance.get_public_workspaces_knowledge_bases(workspace_id)
+        print("The response of KnowledgeBasesApi->get_public_workspaces_knowledge_bases:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling KnowledgeBasesApi->get_public_workspaces_knowledge_bases: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **workspace_id** | **UUID**| Workspace UUID | 
+
+### Return type
+
+[**GetPublicWorkspacesKnowledgeBases200Response**](GetPublicWorkspacesKnowledgeBases200Response.md)
+
+### Authorization
+
+[bearer_auth](../README.md#bearer_auth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | knowledge bases returned |  -  |
+**401** | unauthorized |  -  |
+**404** | workspace not found |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_public_workspaces_knowledge_bases2**
+> GetPublicWorkspacesKnowledgeBases2200Response get_public_workspaces_knowledge_bases2(workspace_id, id)
 
 Get a knowledge base
 
@@ -186,7 +186,7 @@ Returns a single active knowledge base belonging to the requested workspace.
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_id_get200_response import PublicWorkspacesWorkspaceIdKnowledgeBasesIdGet200Response
+from fetch_hive_sdk.models.get_public_workspaces_knowledge_bases2200_response import GetPublicWorkspacesKnowledgeBases2200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -215,11 +215,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Get a knowledge base
-        api_response = api_instance.public_workspaces_workspace_id_knowledge_bases_id_get(workspace_id, id)
-        print("The response of KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_get:\n")
+        api_response = api_instance.get_public_workspaces_knowledge_bases2(workspace_id, id)
+        print("The response of KnowledgeBasesApi->get_public_workspaces_knowledge_bases2:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_get: %s\n" % e)
+        print("Exception when calling KnowledgeBasesApi->get_public_workspaces_knowledge_bases2: %s\n" % e)
 ```
 
 
@@ -234,7 +234,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdKnowledgeBasesIdGet200Response**](PublicWorkspacesWorkspaceIdKnowledgeBasesIdGet200Response.md)
+[**GetPublicWorkspacesKnowledgeBases2200Response**](GetPublicWorkspacesKnowledgeBases2200Response.md)
 
 ### Authorization
 
@@ -255,8 +255,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **public_workspaces_workspace_id_knowledge_bases_id_patch**
-> PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatch200Response public_workspaces_workspace_id_knowledge_bases_id_patch(workspace_id, id, public_workspaces_workspace_id_knowledge_bases_id_patch_request)
+# **patch_public_workspaces_knowledge_bases**
+> PatchPublicWorkspacesKnowledgeBases200Response patch_public_workspaces_knowledge_bases(workspace_id, id, patch_public_workspaces_knowledge_bases_request)
 
 Update a knowledge base
 
@@ -268,8 +268,8 @@ Updates name, description, or search settings of an existing knowledge base.
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_id_patch200_response import PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatch200Response
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_id_patch_request import PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatchRequest
+from fetch_hive_sdk.models.patch_public_workspaces_knowledge_bases200_response import PatchPublicWorkspacesKnowledgeBases200Response
+from fetch_hive_sdk.models.patch_public_workspaces_knowledge_bases_request import PatchPublicWorkspacesKnowledgeBasesRequest
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -295,15 +295,15 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
     api_instance = fetch_hive_sdk.KnowledgeBasesApi(api_client)
     workspace_id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Workspace UUID
     id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Knowledge base UUID
-    public_workspaces_workspace_id_knowledge_bases_id_patch_request = fetch_hive_sdk.PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatchRequest() # PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatchRequest | 
+    patch_public_workspaces_knowledge_bases_request = fetch_hive_sdk.PatchPublicWorkspacesKnowledgeBasesRequest() # PatchPublicWorkspacesKnowledgeBasesRequest | 
 
     try:
         # Update a knowledge base
-        api_response = api_instance.public_workspaces_workspace_id_knowledge_bases_id_patch(workspace_id, id, public_workspaces_workspace_id_knowledge_bases_id_patch_request)
-        print("The response of KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_patch:\n")
+        api_response = api_instance.patch_public_workspaces_knowledge_bases(workspace_id, id, patch_public_workspaces_knowledge_bases_request)
+        print("The response of KnowledgeBasesApi->patch_public_workspaces_knowledge_bases:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_patch: %s\n" % e)
+        print("Exception when calling KnowledgeBasesApi->patch_public_workspaces_knowledge_bases: %s\n" % e)
 ```
 
 
@@ -315,11 +315,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **workspace_id** | **UUID**| Workspace UUID | 
  **id** | **UUID**| Knowledge base UUID | 
- **public_workspaces_workspace_id_knowledge_bases_id_patch_request** | [**PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatchRequest**](PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatchRequest.md)|  | 
+ **patch_public_workspaces_knowledge_bases_request** | [**PatchPublicWorkspacesKnowledgeBasesRequest**](PatchPublicWorkspacesKnowledgeBasesRequest.md)|  | 
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatch200Response**](PublicWorkspacesWorkspaceIdKnowledgeBasesIdPatch200Response.md)
+[**PatchPublicWorkspacesKnowledgeBases200Response**](PatchPublicWorkspacesKnowledgeBases200Response.md)
 
 ### Authorization
 
@@ -340,8 +340,90 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **public_workspaces_workspace_id_knowledge_bases_id_search_post**
-> PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPost200Response public_workspaces_workspace_id_knowledge_bases_id_search_post(workspace_id, id, public_workspaces_workspace_id_knowledge_bases_id_search_post_request)
+# **post_public_workspaces_knowledge_bases**
+> PostPublicWorkspacesKnowledgeBases200Response post_public_workspaces_knowledge_bases(workspace_id, post_public_workspaces_knowledge_bases_request)
+
+Create a knowledge base
+
+Creates a new knowledge base in the requested workspace.
+
+### Example
+
+* Bearer (JWT) Authentication (bearer_auth):
+
+```python
+import fetch_hive_sdk
+from fetch_hive_sdk.models.post_public_workspaces_knowledge_bases200_response import PostPublicWorkspacesKnowledgeBases200Response
+from fetch_hive_sdk.models.post_public_workspaces_knowledge_bases_request import PostPublicWorkspacesKnowledgeBasesRequest
+from fetch_hive_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.fetchhive.com/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = fetch_hive_sdk.Configuration(
+    host = "https://api.fetchhive.com/v1"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization (JWT): bearer_auth
+configuration = fetch_hive_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with fetch_hive_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = fetch_hive_sdk.KnowledgeBasesApi(api_client)
+    workspace_id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Workspace UUID
+    post_public_workspaces_knowledge_bases_request = fetch_hive_sdk.PostPublicWorkspacesKnowledgeBasesRequest() # PostPublicWorkspacesKnowledgeBasesRequest | 
+
+    try:
+        # Create a knowledge base
+        api_response = api_instance.post_public_workspaces_knowledge_bases(workspace_id, post_public_workspaces_knowledge_bases_request)
+        print("The response of KnowledgeBasesApi->post_public_workspaces_knowledge_bases:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling KnowledgeBasesApi->post_public_workspaces_knowledge_bases: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **workspace_id** | **UUID**| Workspace UUID | 
+ **post_public_workspaces_knowledge_bases_request** | [**PostPublicWorkspacesKnowledgeBasesRequest**](PostPublicWorkspacesKnowledgeBasesRequest.md)|  | 
+
+### Return type
+
+[**PostPublicWorkspacesKnowledgeBases200Response**](PostPublicWorkspacesKnowledgeBases200Response.md)
+
+### Authorization
+
+[bearer_auth](../README.md#bearer_auth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | knowledge base created |  -  |
+**401** | unauthorized |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **post_public_workspaces_knowledge_bases_search**
+> PostPublicWorkspacesKnowledgeBasesSearch200Response post_public_workspaces_knowledge_bases_search(workspace_id, id, post_public_workspaces_knowledge_bases_search_request)
 
 Search a knowledge base
 
@@ -355,8 +437,8 @@ Returns matching chunks above the configured score threshold.
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_id_search_post200_response import PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPost200Response
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_id_search_post_request import PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPostRequest
+from fetch_hive_sdk.models.post_public_workspaces_knowledge_bases_search200_response import PostPublicWorkspacesKnowledgeBasesSearch200Response
+from fetch_hive_sdk.models.post_public_workspaces_knowledge_bases_search_request import PostPublicWorkspacesKnowledgeBasesSearchRequest
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -382,15 +464,15 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
     api_instance = fetch_hive_sdk.KnowledgeBasesApi(api_client)
     workspace_id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Workspace UUID
     id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Knowledge base UUID
-    public_workspaces_workspace_id_knowledge_bases_id_search_post_request = fetch_hive_sdk.PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPostRequest() # PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPostRequest | 
+    post_public_workspaces_knowledge_bases_search_request = fetch_hive_sdk.PostPublicWorkspacesKnowledgeBasesSearchRequest() # PostPublicWorkspacesKnowledgeBasesSearchRequest | 
 
     try:
         # Search a knowledge base
-        api_response = api_instance.public_workspaces_workspace_id_knowledge_bases_id_search_post(workspace_id, id, public_workspaces_workspace_id_knowledge_bases_id_search_post_request)
-        print("The response of KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_search_post:\n")
+        api_response = api_instance.post_public_workspaces_knowledge_bases_search(workspace_id, id, post_public_workspaces_knowledge_bases_search_request)
+        print("The response of KnowledgeBasesApi->post_public_workspaces_knowledge_bases_search:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_id_search_post: %s\n" % e)
+        print("Exception when calling KnowledgeBasesApi->post_public_workspaces_knowledge_bases_search: %s\n" % e)
 ```
 
 
@@ -402,11 +484,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **workspace_id** | **UUID**| Workspace UUID | 
  **id** | **UUID**| Knowledge base UUID | 
- **public_workspaces_workspace_id_knowledge_bases_id_search_post_request** | [**PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPostRequest**](PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPostRequest.md)|  | 
+ **post_public_workspaces_knowledge_bases_search_request** | [**PostPublicWorkspacesKnowledgeBasesSearchRequest**](PostPublicWorkspacesKnowledgeBasesSearchRequest.md)|  | 
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPost200Response**](PublicWorkspacesWorkspaceIdKnowledgeBasesIdSearchPost200Response.md)
+[**PostPublicWorkspacesKnowledgeBasesSearch200Response**](PostPublicWorkspacesKnowledgeBasesSearch200Response.md)
 
 ### Authorization
 
@@ -424,88 +506,6 @@ Name | Type | Description  | Notes
 **200** | search results returned |  -  |
 **401** | unauthorized |  -  |
 **422** | invalid search type |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **public_workspaces_workspace_id_knowledge_bases_post**
-> PublicWorkspacesWorkspaceIdKnowledgeBasesPost200Response public_workspaces_workspace_id_knowledge_bases_post(workspace_id, public_workspaces_workspace_id_knowledge_bases_post_request)
-
-Create a knowledge base
-
-Creates a new knowledge base in the requested workspace.
-
-### Example
-
-* Bearer (JWT) Authentication (bearer_auth):
-
-```python
-import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_post200_response import PublicWorkspacesWorkspaceIdKnowledgeBasesPost200Response
-from fetch_hive_sdk.models.public_workspaces_workspace_id_knowledge_bases_post_request import PublicWorkspacesWorkspaceIdKnowledgeBasesPostRequest
-from fetch_hive_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to https://api.fetchhive.com/v1
-# See configuration.py for a list of all supported configuration parameters.
-configuration = fetch_hive_sdk.Configuration(
-    host = "https://api.fetchhive.com/v1"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearer_auth
-configuration = fetch_hive_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with fetch_hive_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = fetch_hive_sdk.KnowledgeBasesApi(api_client)
-    workspace_id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | Workspace UUID
-    public_workspaces_workspace_id_knowledge_bases_post_request = fetch_hive_sdk.PublicWorkspacesWorkspaceIdKnowledgeBasesPostRequest() # PublicWorkspacesWorkspaceIdKnowledgeBasesPostRequest | 
-
-    try:
-        # Create a knowledge base
-        api_response = api_instance.public_workspaces_workspace_id_knowledge_bases_post(workspace_id, public_workspaces_workspace_id_knowledge_bases_post_request)
-        print("The response of KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_post:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling KnowledgeBasesApi->public_workspaces_workspace_id_knowledge_bases_post: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **workspace_id** | **UUID**| Workspace UUID | 
- **public_workspaces_workspace_id_knowledge_bases_post_request** | [**PublicWorkspacesWorkspaceIdKnowledgeBasesPostRequest**](PublicWorkspacesWorkspaceIdKnowledgeBasesPostRequest.md)|  | 
-
-### Return type
-
-[**PublicWorkspacesWorkspaceIdKnowledgeBasesPost200Response**](PublicWorkspacesWorkspaceIdKnowledgeBasesPost200Response.md)
-
-### Authorization
-
-[bearer_auth](../README.md#bearer_auth)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | knowledge base created |  -  |
-**401** | unauthorized |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

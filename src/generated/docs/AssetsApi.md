@@ -4,12 +4,12 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**public_workspaces_workspace_id_assets_get**](AssetsApi.md#public_workspaces_workspace_id_assets_get) | **GET** /public/workspaces/{workspace_id}/assets | List public workspace assets
-[**public_workspaces_workspace_id_assets_post**](AssetsApi.md#public_workspaces_workspace_id_assets_post) | **POST** /public/workspaces/{workspace_id}/assets | Upload a public workspace asset
+[**get_public_workspaces_assets**](AssetsApi.md#get_public_workspaces_assets) | **GET** /public/workspaces/{workspace_id}/assets | List public workspace assets
+[**post_public_workspaces_assets**](AssetsApi.md#post_public_workspaces_assets) | **POST** /public/workspaces/{workspace_id}/assets | Upload a public workspace asset
 
 
-# **public_workspaces_workspace_id_assets_get**
-> PublicWorkspacesWorkspaceIdAssetsGet200Response public_workspaces_workspace_id_assets_get(workspace_id)
+# **get_public_workspaces_assets**
+> GetPublicWorkspacesAssets200Response get_public_workspaces_assets(workspace_id)
 
 List public workspace assets
 
@@ -21,7 +21,7 @@ Returns assets scoped to the workspace attached to the public API key.
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_assets_get200_response import PublicWorkspacesWorkspaceIdAssetsGet200Response
+from fetch_hive_sdk.models.get_public_workspaces_assets200_response import GetPublicWorkspacesAssets200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -49,11 +49,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # List public workspace assets
-        api_response = api_instance.public_workspaces_workspace_id_assets_get(workspace_id)
-        print("The response of AssetsApi->public_workspaces_workspace_id_assets_get:\n")
+        api_response = api_instance.get_public_workspaces_assets(workspace_id)
+        print("The response of AssetsApi->get_public_workspaces_assets:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AssetsApi->public_workspaces_workspace_id_assets_get: %s\n" % e)
+        print("Exception when calling AssetsApi->get_public_workspaces_assets: %s\n" % e)
 ```
 
 
@@ -67,7 +67,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdAssetsGet200Response**](PublicWorkspacesWorkspaceIdAssetsGet200Response.md)
+[**GetPublicWorkspacesAssets200Response**](GetPublicWorkspacesAssets200Response.md)
 
 ### Authorization
 
@@ -88,8 +88,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **public_workspaces_workspace_id_assets_post**
-> PublicWorkspacesWorkspaceIdAssetsPost200Response public_workspaces_workspace_id_assets_post(workspace_id)
+# **post_public_workspaces_assets**
+> PostPublicWorkspacesAssets200Response post_public_workspaces_assets(workspace_id)
 
 Upload a public workspace asset
 
@@ -101,7 +101,7 @@ Uploads a file and creates a workspace-scoped Asset that can be used as a Hive A
 
 ```python
 import fetch_hive_sdk
-from fetch_hive_sdk.models.public_workspaces_workspace_id_assets_post200_response import PublicWorkspacesWorkspaceIdAssetsPost200Response
+from fetch_hive_sdk.models.post_public_workspaces_assets200_response import PostPublicWorkspacesAssets200Response
 from fetch_hive_sdk.rest import ApiException
 from pprint import pprint
 
@@ -129,11 +129,11 @@ with fetch_hive_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Upload a public workspace asset
-        api_response = api_instance.public_workspaces_workspace_id_assets_post(workspace_id)
-        print("The response of AssetsApi->public_workspaces_workspace_id_assets_post:\n")
+        api_response = api_instance.post_public_workspaces_assets(workspace_id)
+        print("The response of AssetsApi->post_public_workspaces_assets:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AssetsApi->public_workspaces_workspace_id_assets_post: %s\n" % e)
+        print("Exception when calling AssetsApi->post_public_workspaces_assets: %s\n" % e)
 ```
 
 
@@ -147,7 +147,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PublicWorkspacesWorkspaceIdAssetsPost200Response**](PublicWorkspacesWorkspaceIdAssetsPost200Response.md)
+[**PostPublicWorkspacesAssets200Response**](PostPublicWorkspacesAssets200Response.md)
 
 ### Authorization
 
