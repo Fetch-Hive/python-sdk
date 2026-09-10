@@ -8,6 +8,8 @@ docs/AgentAttachment.md
 docs/AgentAttachmentOneOf.md
 docs/AgentChatMessagesApi.md
 docs/AgentChatsApi.md
+docs/AgentDelegation.md
+docs/AgentInvokeAsyncConfig.md
 docs/AgentMessage.md
 docs/AgentsApi.md
 docs/AssetObject.md
@@ -57,6 +59,7 @@ docs/InvokeWorkflowResponse.md
 docs/KnowledgeBaseItemsApi.md
 docs/KnowledgeBaseObject.md
 docs/KnowledgeBasesApi.md
+docs/ListThreadAgentDelegations200Response.md
 docs/MetadataValue.md
 docs/ModelsApi.md
 docs/PatchPublicWorkspacesAgents200Response.md
@@ -72,6 +75,7 @@ docs/PatchPublicWorkspacesKnowledgeBasesItemsRequest.md
 docs/PatchPublicWorkspacesKnowledgeBasesItemsRequestKnowledgeBaseItem.md
 docs/PatchPublicWorkspacesKnowledgeBasesRequest.md
 docs/PatchPublicWorkspacesKnowledgeBasesRequestKnowledgeBase.md
+docs/PendingDelegation.md
 docs/PostPublicWorkspacesAgents200Response.md
 docs/PostPublicWorkspacesAgents422Response.md
 docs/PostPublicWorkspacesAgentsChats200Response.md
@@ -122,6 +126,8 @@ fetch_hive_sdk/exceptions.py
 fetch_hive_sdk/models/__init__.py
 fetch_hive_sdk/models/agent_attachment.py
 fetch_hive_sdk/models/agent_attachment_one_of.py
+fetch_hive_sdk/models/agent_delegation.py
+fetch_hive_sdk/models/agent_invoke_async_config.py
 fetch_hive_sdk/models/agent_message.py
 fetch_hive_sdk/models/asset_object.py
 fetch_hive_sdk/models/asset_object_transcription.py
@@ -166,6 +172,7 @@ fetch_hive_sdk/models/invoke_workflow_async_response.py
 fetch_hive_sdk/models/invoke_workflow_request.py
 fetch_hive_sdk/models/invoke_workflow_response.py
 fetch_hive_sdk/models/knowledge_base_object.py
+fetch_hive_sdk/models/list_thread_agent_delegations200_response.py
 fetch_hive_sdk/models/metadata_value.py
 fetch_hive_sdk/models/patch_public_workspaces_agents200_response.py
 fetch_hive_sdk/models/patch_public_workspaces_agents_chats200_response.py
@@ -180,6 +187,7 @@ fetch_hive_sdk/models/patch_public_workspaces_knowledge_bases_items_request.py
 fetch_hive_sdk/models/patch_public_workspaces_knowledge_bases_items_request_knowledge_base_item.py
 fetch_hive_sdk/models/patch_public_workspaces_knowledge_bases_request.py
 fetch_hive_sdk/models/patch_public_workspaces_knowledge_bases_request_knowledge_base.py
+fetch_hive_sdk/models/pending_delegation.py
 fetch_hive_sdk/models/post_public_workspaces_agents200_response.py
 fetch_hive_sdk/models/post_public_workspaces_agents422_response.py
 fetch_hive_sdk/models/post_public_workspaces_agents_chats200_response.py
@@ -218,6 +226,8 @@ test/test_agent_attachment.py
 test/test_agent_attachment_one_of.py
 test/test_agent_chat_messages_api.py
 test/test_agent_chats_api.py
+test/test_agent_delegation.py
+test/test_agent_invoke_async_config.py
 test/test_agent_message.py
 test/test_agents_api.py
 test/test_asset_object.py
@@ -267,6 +277,7 @@ test/test_invoke_workflow_response.py
 test/test_knowledge_base_items_api.py
 test/test_knowledge_base_object.py
 test/test_knowledge_bases_api.py
+test/test_list_thread_agent_delegations200_response.py
 test/test_metadata_value.py
 test/test_models_api.py
 test/test_patch_public_workspaces_agents200_response.py
@@ -282,6 +293,7 @@ test/test_patch_public_workspaces_knowledge_bases_items_request.py
 test/test_patch_public_workspaces_knowledge_bases_items_request_knowledge_base_item.py
 test/test_patch_public_workspaces_knowledge_bases_request.py
 test/test_patch_public_workspaces_knowledge_bases_request_knowledge_base.py
+test/test_pending_delegation.py
 test/test_post_public_workspaces_agents200_response.py
 test/test_post_public_workspaces_agents422_response.py
 test/test_post_public_workspaces_agents_chats200_response.py

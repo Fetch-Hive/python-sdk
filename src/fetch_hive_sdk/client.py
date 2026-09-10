@@ -203,6 +203,7 @@ class FetchHive:
         attachments: list[str | dict[str, Any]] | None = None,
         known_artifact_refs: list[str] | None = None,
         artifact_refs: list[str] | None = None,
+        async_options: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Send a message to an agent and return the full response."""
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": False}
@@ -220,6 +221,8 @@ class FetchHive:
             body["known_artifact_refs"] = known_artifact_refs
         if artifact_refs:
             body["artifact_refs"] = artifact_refs
+        if async_options is not None:
+            body["async"] = async_options
 
         with httpx.Client(timeout=self._timeout) as client:
             resp = client.post(self._url("/agent/invoke"), headers=self._headers, json=body)
@@ -236,6 +239,8 @@ class FetchHive:
         callback_url: str,
         sources: dict[str, Any] | None = None,
         metadata: Metadata | None = None,
+        unattended: bool | None = None,
+        budget_policy: str | None = None,
     ) -> dict[str, Any]:
         """Start a Hive Agent run asynchronously. Requires a callback URL."""
         if not callback_url:
@@ -249,12 +254,25 @@ class FetchHive:
             body["sources"] = sources
         if metadata is not None:
             body["metadata"] = metadata
+        if unattended is not None:
+            body["unattended"] = unattended
+        if budget_policy is not None:
+            body["budget_policy"] = budget_policy
         return self._request("POST", "/hive-agent/invoke", body)
 
     # ── Public resources ──────────────────────────────────────────────────────
 
     def get_request(self, id: str) -> dict[str, Any]:
         return self._request("GET", f"/public/requests/{id}")
+
+    def get_agent_delegation(self, id: str) -> dict[str, Any]:
+        return self._request("GET", f"/agent/delegations/{id}")
+
+    def cancel_agent_delegation(self, id: str) -> dict[str, Any]:
+        return self._request("POST", f"/agent/delegations/{id}/cancel", {})
+
+    def list_thread_delegations(self, thread_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/agent/threads/{thread_id}/delegations")
 
     def list_knowledge_bases(self, workspace_id: str) -> dict[str, Any]:
         return self._request("GET", f"/public/workspaces/{workspace_id}/knowledge_bases")

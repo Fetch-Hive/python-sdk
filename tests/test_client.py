@@ -309,6 +309,8 @@ def test_ha4_optional_sources_and_metadata():
     first = json.loads(respx.calls[0].request.content)
     assert "sources" not in first
     assert "metadata" not in first
+    assert "unattended" not in first
+    assert "budget_policy" not in first
 
     client.invoke_hive_agent(
         hive_agent="agt_1",
@@ -316,10 +318,14 @@ def test_ha4_optional_sources_and_metadata():
         callback_url="https://example.com/cb",
         sources={"website_urls": ["https://example.com"]},
         metadata={"customer_id": "cus_123"},
+        unattended=True,
+        budget_policy="stop",
     )
     second = json.loads(respx.calls[1].request.content)
     assert second["sources"] == {"website_urls": ["https://example.com"]}
     assert second["metadata"] == {"customer_id": "cus_123"}
+    assert second["unattended"] is True
+    assert second["budget_policy"] == "stop"
 
 
 @respx.mock
@@ -389,6 +395,39 @@ def test_r1_get_request():
     result = FetchHive(api_key="k").get_request("req_1")
     assert respx.calls.last.request.method == "GET"
     assert result["request"]["id"] == "req_1"
+
+
+@respx.mock
+def test_d1_get_agent_delegation():
+    """D1 — get_agent_delegation GETs /agent/delegations/:id."""
+    respx.get(f"{DEFAULT_BASE}/agent/delegations/del_1").mock(
+        return_value=httpx.Response(200, json={"id": "del_1", "status": "pending"})
+    )
+    result = FetchHive(api_key="k").get_agent_delegation("del_1")
+    assert respx.calls.last.request.method == "GET"
+    assert result["id"] == "del_1"
+
+
+@respx.mock
+def test_d2_cancel_agent_delegation():
+    """D2 — cancel_agent_delegation POSTs /agent/delegations/:id/cancel."""
+    respx.post(f"{DEFAULT_BASE}/agent/delegations/del_1/cancel").mock(
+        return_value=httpx.Response(200, json={"id": "del_1", "status": "cancelled"})
+    )
+    result = FetchHive(api_key="k").cancel_agent_delegation("del_1")
+    assert respx.calls.last.request.method == "POST"
+    assert result["status"] == "cancelled"
+
+
+@respx.mock
+def test_d3_list_thread_delegations():
+    """D3 — list_thread_delegations GETs /agent/threads/:thread_id/delegations."""
+    respx.get(f"{DEFAULT_BASE}/agent/threads/thread-1/delegations").mock(
+        return_value=httpx.Response(200, json={"delegations": [{"id": "del_1"}]})
+    )
+    result = FetchHive(api_key="k").list_thread_delegations("thread-1")
+    assert respx.calls.last.request.method == "GET"
+    assert result["delegations"][0]["id"] == "del_1"
 
 
 # ── S: Streaming ───────────────────────────────────────────────────────────────

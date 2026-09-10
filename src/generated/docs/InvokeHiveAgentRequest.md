@@ -7,6 +7,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **hive_agent** | **str** | Hive Agent ID from the dashboard. | 
 **objective** | **str** | Specific objective for the planner to create work nodes from. | 
+**unattended** | **bool** | When true, the run never pauses for clarification or budget approval. Defaults to false. | [optional] 
+**budget_policy** | **str** | Unattended budget behavior when spend would otherwise need approval. stop fails the run; proceed_to_cap continues until the hard cap. | [optional] 
 **sources** | [**HiveAgentSources**](HiveAgentSources.md) |  | [optional] 
 **metadata** | [**Dict[str, MetadataValue]**](MetadataValue.md) | Flat caller-defined metadata stored separately from internal metadata for log display and filtering. Keys must be non-empty strings; values must be strings, numbers, booleans, or null. | [optional] 
 **var_async** | [**HiveAgentAsyncConfig**](HiveAgentAsyncConfig.md) |  | 

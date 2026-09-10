@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **usage** | [**TokenUsage**](TokenUsage.md) |  | [optional] 
 **tool_calls** | [**List[ToolInvocation]**](ToolInvocation.md) | Tool invocations made during this run (if any). | [optional] 
 **artifacts** | [**List[GeneratedArtifact]**](GeneratedArtifact.md) | Generated documents and images produced by completed artifact tools. | [optional] 
+**pending_delegations** | [**List[PendingDelegation]**](PendingDelegation.md) | Background workflows started during this turn. Present only when the turn ended with one or more pending delegations.  | [optional] 
 
 ## Example
 

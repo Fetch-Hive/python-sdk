@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **attachments** | [**List[AgentAttachment]**](AgentAttachment.md) | External HTTPS documents/images or uploaded Asset descriptors for the current turn. Combined with &#x60;artifact_refs&#x60;, at most five items are accepted. External audio URLs are unsupported.  | [optional] 
 **known_artifact_refs** | **List[UUID]** | Account/workspace-owned Asset UUIDs available for lightweight discovery in caller-managed sessions. Persistent threads derive this list from the saved chat.  | [optional] 
 **artifact_refs** | **List[UUID]** | Artifact UUIDs explicitly selected for the current turn. In a caller-managed session every value must also appear in &#x60;known_artifact_refs&#x60;.  | [optional] 
+**var_async** | [**AgentInvokeAsyncConfig**](AgentInvokeAsyncConfig.md) |  | [optional] 
 
 ## Example
 

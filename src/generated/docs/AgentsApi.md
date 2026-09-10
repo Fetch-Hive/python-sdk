@@ -4,13 +4,98 @@ All URIs are relative to *https://api.fetchhive.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**cancel_agent_delegation**](AgentsApi.md#cancel_agent_delegation) | **POST** /agent/delegations/{id}/cancel | Cancel an agent delegation
 [**delete_public_workspaces_agents**](AgentsApi.md#delete_public_workspaces_agents) | **DELETE** /public/workspaces/{workspace_id}/agents/{id} | Delete an agent
+[**get_agent_delegation**](AgentsApi.md#get_agent_delegation) | **GET** /agent/delegations/{id} | Get an agent delegation
 [**get_public_workspaces_agents**](AgentsApi.md#get_public_workspaces_agents) | **GET** /public/workspaces/{workspace_id}/agents/{id} | Get an agent
 [**get_public_workspaces_agents2**](AgentsApi.md#get_public_workspaces_agents2) | **GET** /public/workspaces/{workspace_id}/agents | List public workspace agents
 [**invoke_agent**](AgentsApi.md#invoke_agent) | **POST** /agent/invoke | Invoke an agent
+[**list_thread_agent_delegations**](AgentsApi.md#list_thread_agent_delegations) | **GET** /agent/threads/{thread_id}/delegations | List pending agent delegations for a thread
 [**patch_public_workspaces_agents**](AgentsApi.md#patch_public_workspaces_agents) | **PATCH** /public/workspaces/{workspace_id}/agents/{id} | Update an agent
 [**post_public_workspaces_agents**](AgentsApi.md#post_public_workspaces_agents) | **POST** /public/workspaces/{workspace_id}/agents | Create an agent
 
+
+# **cancel_agent_delegation**
+> AgentDelegation cancel_agent_delegation(id)
+
+Cancel an agent delegation
+
+Cancels a pending or running background workflow that an agent started.
+Already finished delegations are returned unchanged.
+
+
+### Example
+
+* Bearer Authentication (BearerAuth):
+
+```python
+import fetch_hive_sdk
+from fetch_hive_sdk.models.agent_delegation import AgentDelegation
+from fetch_hive_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.fetchhive.com/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = fetch_hive_sdk.Configuration(
+    host = "https://api.fetchhive.com/v1"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: BearerAuth
+configuration = fetch_hive_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with fetch_hive_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = fetch_hive_sdk.AgentsApi(api_client)
+    id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | 
+
+    try:
+        # Cancel an agent delegation
+        api_response = api_instance.cancel_agent_delegation(id)
+        print("The response of AgentsApi->cancel_agent_delegation:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AgentsApi->cancel_agent_delegation: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **UUID**|  | 
+
+### Return type
+
+[**AgentDelegation**](AgentDelegation.md)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Delegation after cancel. |  -  |
+**401** | Missing or invalid API token. |  -  |
+**404** | The requested resource was not found. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_public_workspaces_agents**
 > DeletePublicWorkspacesAgents200Response delete_public_workspaces_agents(workspace_id, id)
@@ -91,6 +176,89 @@ Name | Type | Description  | Notes
 **200** | agent deleted |  -  |
 **401** | unauthorized |  -  |
 **422** | agent not found |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_agent_delegation**
+> AgentDelegation get_agent_delegation(id)
+
+Get an agent delegation
+
+Returns the status and result of a background workflow started by an
+agent. Use this when you invoked an agent without a `thread_id` and
+without `async.callback_url`.
+
+
+### Example
+
+* Bearer Authentication (BearerAuth):
+
+```python
+import fetch_hive_sdk
+from fetch_hive_sdk.models.agent_delegation import AgentDelegation
+from fetch_hive_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.fetchhive.com/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = fetch_hive_sdk.Configuration(
+    host = "https://api.fetchhive.com/v1"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: BearerAuth
+configuration = fetch_hive_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with fetch_hive_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = fetch_hive_sdk.AgentsApi(api_client)
+    id = UUID('38400000-8cf0-11bd-b23e-10b96e4ef00d') # UUID | 
+
+    try:
+        # Get an agent delegation
+        api_response = api_instance.get_agent_delegation(id)
+        print("The response of AgentsApi->get_agent_delegation:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AgentsApi->get_agent_delegation: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **UUID**|  | 
+
+### Return type
+
+[**AgentDelegation**](AgentDelegation.md)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Delegation status and result. |  -  |
+**401** | Missing or invalid API token. |  -  |
+**404** | The requested resource was not found. |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -346,6 +514,87 @@ Name | Type | Description  | Notes
 **400** | Invalid request body or parameters. |  -  |
 **401** | Missing or invalid API token. |  -  |
 **500** | Unexpected server-side error. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_thread_agent_delegations**
+> ListThreadAgentDelegations200Response list_thread_agent_delegations(thread_id)
+
+List pending agent delegations for a thread
+
+Lists pending and running background workflows for a conversation
+thread. Pass the same `thread_id` you send to `POST /agent/invoke`.
+
+
+### Example
+
+* Bearer Authentication (BearerAuth):
+
+```python
+import fetch_hive_sdk
+from fetch_hive_sdk.models.list_thread_agent_delegations200_response import ListThreadAgentDelegations200Response
+from fetch_hive_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.fetchhive.com/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = fetch_hive_sdk.Configuration(
+    host = "https://api.fetchhive.com/v1"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: BearerAuth
+configuration = fetch_hive_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with fetch_hive_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = fetch_hive_sdk.AgentsApi(api_client)
+    thread_id = 'thread_id_example' # str | 
+
+    try:
+        # List pending agent delegations for a thread
+        api_response = api_instance.list_thread_agent_delegations(thread_id)
+        print("The response of AgentsApi->list_thread_agent_delegations:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AgentsApi->list_thread_agent_delegations: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **thread_id** | **str**|  | 
+
+### Return type
+
+[**ListThreadAgentDelegations200Response**](ListThreadAgentDelegations200Response.md)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Open delegations for the thread. |  -  |
+**401** | Missing or invalid API token. |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
