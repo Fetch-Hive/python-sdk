@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **var_async** | [**AsyncConfig**](AsyncConfig.md) |  | [optional] 
 **user** | **str** | Optional opaque caller identifier for audit logging. | [optional] 
 **metadata** | [**Dict[str, MetadataValue]**](MetadataValue.md) | Flat caller-defined metadata stored separately from internal metadata for log display and filtering. Keys must be non-empty strings; values must be strings, numbers, booleans, or null. | [optional] 
+**tool_approval** | **str** | &#x60;policy&#x60; follows the deployment&#39;s saved auto-approve switch. Omit the field for the same behavior. &#x60;auto_approve&#x60; applies to this call only, and only when the API key is allowed to auto-approve actions. Any other value is &#x60;400 invalid_tool_approval&#x60;. A key without the permission, a signed-in token, or a webhook is &#x60;403 tool_approval_override_not_permitted&#x60; before the workflow starts. The call does not change the deployment&#39;s saved switch. Destructive actions still ask. Deny rules still block the action.  | [optional] 
 
 ## Example
 

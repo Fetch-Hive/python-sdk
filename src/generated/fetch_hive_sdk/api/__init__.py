@@ -12,5 +12,6 @@ from fetch_hive_sdk.api.models_api import ModelsApi
 from fetch_hive_sdk.api.prompts_api import PromptsApi
 from fetch_hive_sdk.api.requests_api import RequestsApi
 from fetch_hive_sdk.api.search_services_api import SearchServicesApi
+from fetch_hive_sdk.api.tool_action_approvals_api import ToolActionApprovalsApi
 from fetch_hive_sdk.api.workflows_api import WorkflowsApi
 

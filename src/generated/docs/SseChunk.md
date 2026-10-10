@@ -1,6 +1,6 @@
 # SseChunk
 
-A single event in a Server-Sent Events stream. The `type` field is a runtime discriminator. Known values:   - `reasoning` — a reasoning / thinking chunk (prompt and agent streams)   - `response`  — a text chunk (prompt and agent streams)   - `tool`      — a tool invocation result (agent stream only)   - `artifact`  — a generated document or image descriptor (agent stream only)   - `usage`     — final token usage event; signals end of meaningful stream content   - `summary`   — auto-summarization event emitted before reasoning when a thread                   history was compressed (agent stream only)   - `error`     — server-side error during streaming  The stream is terminated by `data: [DONE]`, which is handled by the SSE parser and never surfaced as a chunk. 
+A single event in a Server-Sent Events stream. The `type` field is a runtime discriminator. Known values:   - `reasoning` — a reasoning / thinking chunk (prompt and agent streams)   - `response`  — a text chunk (prompt and agent streams)   - `tool`      — a tool invocation result (agent stream only)   - `artifact`  — a generated document or image descriptor (agent stream only)   - `usage`     — final token usage event; signals end of meaningful stream content   - `tool_approval` — a paused tool call waiting for a decision (agent stream only)   - `summary`   — auto-summarization event emitted before reasoning when a thread                   history was compressed (agent stream only)   - `error`     — server-side error during streaming  The stream is terminated by `data: [DONE]`, which is handled by the SSE parser and never surfaced as a chunk. 
 
 ## Properties
 
@@ -18,6 +18,14 @@ Name | Type | Description | Notes
 **observation** | **str** | Serialised JSON tool result. Present for &#x60;tool&#x60; events. | [optional] 
 **artifact** | [**GeneratedArtifact**](GeneratedArtifact.md) |  | [optional] 
 **stop_reason** | **str** | Reason the stream ended. Present on &#x60;usage&#x60; events (e.g. \&quot;completed\&quot;). | [optional] 
+**tool_approval** | **str** | Effective tool-approval mode. Present on the final &#x60;usage&#x60; event. On a &#x60;tool_approval&#x60; event this field is absent; the payload is &#x60;approval&#x60;.  | [optional] 
+**approval** | **Dict[str, object]** | Present on &#x60;tool_approval&#x60; events. The paused call. | [optional] 
+**status** | **str** | Present on the final &#x60;usage&#x60; event. &#x60;completed&#x60; or &#x60;awaiting_approval&#x60;.  | [optional] 
+**run_id** | **str** | Present on the final &#x60;usage&#x60; event. Public id for this run. | [optional] 
+**thread_id** | **str** | Present on the final &#x60;usage&#x60; event. The caller thread id, or null. (value may be null) | [optional] 
+**pending_tool_approvals** | [**List[PendingToolApproval]**](PendingToolApproval.md) | Present on the final &#x60;usage&#x60; event when &#x60;status&#x60; is &#x60;awaiting_approval&#x60;. | [optional] 
+**denied_tool_calls** | [**List[DeniedToolCall]**](DeniedToolCall.md) | Present on the final &#x60;usage&#x60; event when this turn denied one or more tools. | [optional] 
+**auto_approved_tool_calls** | [**List[SseChunkAutoApprovedToolCallsInner]**](SseChunkAutoApprovedToolCallsInner.md) | Present on the final &#x60;usage&#x60; event when an override let one or more actions run. Each item has &#x60;summary&#x60; and &#x60;tool_name&#x60;.  | [optional] 
 **summary_text** | **str** | Compressed summary of the prior conversation. Present for &#x60;summary&#x60; events. | [optional] 
 **original_token_count** | **int** | Token count before summarization. Present for &#x60;summary&#x60; events. | [optional] 
 **context_limit** | **int** | Model context window size. Present for &#x60;summary&#x60; events. | [optional] 

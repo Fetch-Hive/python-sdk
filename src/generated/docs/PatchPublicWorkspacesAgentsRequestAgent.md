@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **reasoning_effort** | **str** |  | [optional] 
 **tool_choice** | **str** |  | [optional] 
 **max_tool_calls** | **int** |  | [optional] 
+**tool_approval_mode** | **str** | Rejected with 422 tool_approval_mode_requires_dashboard. Change this in the dashboard. | [optional] 
 
 ## Example
 
