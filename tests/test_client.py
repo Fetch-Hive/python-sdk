@@ -221,6 +221,7 @@ def test_ag3_optional_fields_omitted_when_absent():
     assert "user" not in body
     assert "messages" not in body
     assert "attachments" not in body
+    assert "tool_approval" not in body
 
 
 @respx.mock
@@ -430,6 +431,49 @@ def test_d3_list_thread_delegations():
     assert result["delegations"][0]["id"] == "del_1"
 
 
+@respx.mock
+def test_ta1_tool_action_approval_helpers():
+    """TA1 — list, show, and decide hit the public approval paths."""
+    respx.route(url__regex=r".*/tool_action_approvals.*").mock(
+        return_value=httpx.Response(200, json={"ok": True})
+    )
+    client = FetchHive(api_key="k")
+    client.list_tool_action_approvals("ws_1", status="pending", agent_id="agt_1", limit=10)
+    client.get_tool_action_approval("ws_1", "appr_1")
+    client.decide_tool_action_approval("ws_1", "appr_1", "allow_once")
+
+    list_url = str(respx.calls[0].request.url)
+    assert "/public/workspaces/ws_1/tool_action_approvals" in list_url
+    assert "status=pending" in list_url
+    assert "agent_id=agt_1" in list_url
+    assert "limit=10" in list_url
+    assert respx.calls[0].request.method == "GET"
+    assert str(respx.calls[1].request.url).endswith("/tool_action_approvals/appr_1")
+    assert respx.calls[1].request.method == "GET"
+    assert str(respx.calls[2].request.url).endswith("/tool_action_approvals/appr_1/decide")
+    assert respx.calls[2].request.method == "POST"
+    assert json.loads(respx.calls[2].request.content) == {"decision": "allow_once"}
+
+
+@respx.mock
+def test_ta2_tool_approval_included_only_when_provided():
+    """TA2 — tool_approval is sent on agent and workflow invoke only when provided."""
+    respx.post(url__regex=r".*/(agent|workflow)/invoke").mock(
+        return_value=httpx.Response(200, json={"response": "ok"})
+    )
+    client = FetchHive(api_key="k")
+    client.invoke_agent(agent="a", message="m")
+    client.invoke_workflow(deployment="d")
+    client.invoke_agent(agent="a", message="m", tool_approval="auto_approve")
+    client.invoke_workflow(deployment="d", tool_approval="policy")
+
+    bodies = [json.loads(call.request.content) for call in respx.calls]
+    assert "tool_approval" not in bodies[0]
+    assert "tool_approval" not in bodies[1]
+    assert bodies[2]["tool_approval"] == "auto_approve"
+    assert bodies[3]["tool_approval"] == "policy"
+
+
 # ── S: Streaming ───────────────────────────────────────────────────────────────
 
 SSE_RESPONSE = b"data: {\"type\":\"response\",\"response\":\"Hello\"}\n\ndata: [DONE]\n\n"
@@ -468,12 +512,14 @@ def test_s2_invoke_agent_stream():
             agent="a",
             message="m",
             metadata={"plan": "enterprise"},
+            tool_approval="auto_approve",
         )
     )
 
     body = json.loads(respx.calls.last.request.content)
     assert body["streaming"] is True
     assert body["metadata"] == {"plan": "enterprise"}
+    assert body["tool_approval"] == "auto_approve"
     assert len(chunks) == 1
     assert chunks[0]["response"] == "Hello"
 
@@ -513,11 +559,13 @@ async def test_s3_async_invoke_agent_stream():
         agent="a",
         message="m",
         metadata={"plan": "enterprise"},
+        tool_approval="auto_approve",
     ):
         chunks.append(chunk)
 
     body = json.loads(respx.calls.last.request.content)
     assert body["metadata"] == {"plan": "enterprise"}
+    assert body["tool_approval"] == "auto_approve"
     assert len(chunks) == 1
     assert chunks[0]["response"] == "Hello"
 

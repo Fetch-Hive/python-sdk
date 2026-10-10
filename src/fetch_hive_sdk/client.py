@@ -39,6 +39,37 @@ from .streaming import aiter_sse, iter_sse
 
 Metadata = dict[str, str | int | float | bool | None]
 
+
+def _put_tool_approval(body: dict[str, Any], tool_approval: str | None) -> None:
+    if tool_approval is not None:
+        body["tool_approval"] = tool_approval
+
+
+def _approval_list_path(
+    workspace_id: str,
+    *,
+    status: str | None = None,
+    agent_id: str | None = None,
+    run_id: str | None = None,
+    request_id: str | None = None,
+    cursor: str | None = None,
+    limit: int | None = None,
+) -> str:
+    path = f"/public/workspaces/{workspace_id}/tool_action_approvals"
+    filters = {
+        "status": status,
+        "agent_id": agent_id,
+        "run_id": run_id,
+        "request_id": request_id,
+        "cursor": cursor,
+        "limit": limit,
+    }
+    present = {key: value for key, value in filters.items() if value is not None}
+    if not present:
+        return path
+    return f"{path}?{httpx.QueryParams(present)}"
+
+
 DEFAULT_BASE_URL = "https://api.fetchhive.com/v1"
 
 
@@ -167,6 +198,7 @@ class FetchHive:
         callback_url: str | None = None,
         user: str | None = None,
         metadata: Metadata | None = None,
+        tool_approval: str | None = None,
     ) -> dict[str, Any]:
         """Invoke a workflow deployment (sync or async)."""
         body: dict[str, Any] = {"deployment": deployment}
@@ -178,6 +210,7 @@ class FetchHive:
             body["user"] = user
         if metadata is not None:
             body["metadata"] = metadata
+        _put_tool_approval(body, tool_approval)
         if async_mode:
             body["async"] = {"enabled": True}
             if callback_url:
@@ -204,8 +237,13 @@ class FetchHive:
         known_artifact_refs: list[str] | None = None,
         artifact_refs: list[str] | None = None,
         async_options: dict[str, Any] | None = None,
+        tool_approval: str | None = None,
     ) -> dict[str, Any]:
-        """Send a message to an agent and return the full response."""
+        """Send a message to an agent and return the full response.
+
+        ``tool_approval`` is ``policy`` or ``auto_approve``. Omit it to follow
+        saved rules. An API-key run resumes on the server after a decision.
+        """
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": False}
         if thread_id:
             body["thread_id"] = thread_id
@@ -221,6 +259,7 @@ class FetchHive:
             body["known_artifact_refs"] = known_artifact_refs
         if artifact_refs:
             body["artifact_refs"] = artifact_refs
+        _put_tool_approval(body, tool_approval)
         if async_options is not None:
             body["async"] = async_options
 
@@ -273,6 +312,46 @@ class FetchHive:
 
     def list_thread_delegations(self, thread_id: str) -> dict[str, Any]:
         return self._request("GET", f"/agent/threads/{thread_id}/delegations")
+
+    def list_tool_action_approvals(
+        self,
+        workspace_id: str,
+        *,
+        status: str | None = None,
+        agent_id: str | None = None,
+        run_id: str | None = None,
+        request_id: str | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> dict[str, Any]:
+        """List tool-action approvals. The server defaults ``status`` to pending."""
+        return self._request(
+            "GET",
+            _approval_list_path(
+                workspace_id,
+                status=status,
+                agent_id=agent_id,
+                run_id=run_id,
+                request_id=request_id,
+                cursor=cursor,
+                limit=limit,
+            ),
+        )
+
+    def get_tool_action_approval(self, workspace_id: str, approval_id: str) -> dict[str, Any]:
+        """Fetch one tool-action approval."""
+        return self._request("GET", f"/public/workspaces/{workspace_id}/tool_action_approvals/{approval_id}")
+
+    def decide_tool_action_approval(self, workspace_id: str, approval_id: str, decision: str) -> dict[str, Any]:
+        """Decide a tool-action approval. ``decision`` is ``allow_once`` or ``deny``.
+
+        An API-key run resumes on the server after this call.
+        """
+        return self._request(
+            "POST",
+            f"/public/workspaces/{workspace_id}/tool_action_approvals/{approval_id}/decide",
+            {"decision": decision},
+        )
 
     def list_knowledge_bases(self, workspace_id: str) -> dict[str, Any]:
         return self._request("GET", f"/public/workspaces/{workspace_id}/knowledge_bases")
@@ -375,6 +454,7 @@ class FetchHive:
         attachments: list[str | dict[str, Any]] | None = None,
         known_artifact_refs: list[str] | None = None,
         artifact_refs: list[str] | None = None,
+        tool_approval: str | None = None,
     ) -> Generator[dict[str, Any], None, None]:
         """Send a message to an agent and stream SSE events."""
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": True}
@@ -392,6 +472,7 @@ class FetchHive:
             body["known_artifact_refs"] = known_artifact_refs
         if artifact_refs:
             body["artifact_refs"] = artifact_refs
+        _put_tool_approval(body, tool_approval)
 
         with httpx.Client(timeout=self._timeout) as client:
             with client.stream("POST", self._url("/agent/invoke"), headers=self._headers, json=body) as resp:
@@ -410,6 +491,7 @@ class FetchHive:
         attachments: list[str | dict[str, Any]] | None = None,
         known_artifact_refs: list[str] | None = None,
         artifact_refs: list[str] | None = None,
+        tool_approval: str | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """Async: send a message to an agent and stream SSE events."""
         body: dict[str, Any] = {"agent": agent, "message": message, "streaming": True}
@@ -427,6 +509,7 @@ class FetchHive:
             body["known_artifact_refs"] = known_artifact_refs
         if artifact_refs:
             body["artifact_refs"] = artifact_refs
+        _put_tool_approval(body, tool_approval)
 
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             async with client.stream("POST", self._url("/agent/invoke"), headers=self._headers, json=body) as resp:
