@@ -97,6 +97,13 @@ run = client.invoke_pipeline(
 history = client.list_pipeline_runs(deployment="seo-article", per_page=10)
 ```
 
+Re-run from a changed answer or a failed stage: plan first (shows what runs again and its cost), then confirm:
+
+```python
+plan = client.plan_pipeline_revision(run_id, changes={"rerun": ["write"]})
+client.create_pipeline_revision(run_id, changes={"rerun": ["write"]}, confirmed=True)
+```
+
 ## Invoke an agent
 
 ```python
@@ -209,7 +216,7 @@ client = FetchHive()  # picks up FETCH_HIVE_API_KEY automatically
 
 ## Version
 
-0.6.0
+0.6.1
 
 ## License
 

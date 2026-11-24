@@ -666,3 +666,17 @@ def test_e2_non_2xx_on_streaming_raises():
     )
     with pytest.raises(httpx.HTTPStatusError):
         list(FetchHive(api_key="k").invoke_prompt_stream(deployment="d"))
+
+
+@respx.mock
+def test_pl4_revision_plan_and_confirmed_rerun():
+    """PL4 — re-run plan, then a confirmed re-run."""
+    plan = respx.post(f"{DEFAULT_BASE}/pipeline/runs/run_1/revisions/plan").mock(return_value=httpx.Response(200, json={"plan": {}}))
+    create = respx.post(f"{DEFAULT_BASE}/pipeline/runs/run_1/revisions").mock(return_value=httpx.Response(200, json={"status": "started"}))
+
+    client = FetchHive(api_key="k")
+    client.plan_pipeline_revision("run_1", changes={"rerun": ["write"]})
+    client.create_pipeline_revision("run_1", changes={"rerun": ["write"]}, confirmed=True)
+
+    assert json.loads(plan.calls.last.request.content) == {"changes": {"rerun": ["write"]}}
+    assert json.loads(create.calls.last.request.content) == {"changes": {"rerun": ["write"]}, "confirmed": True}

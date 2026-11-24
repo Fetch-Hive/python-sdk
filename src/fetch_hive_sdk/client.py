@@ -327,6 +327,27 @@ class FetchHive:
     def cancel_pipeline_run(self, run_id: str) -> dict[str, Any]:
         return self._request("POST", f"/pipeline/runs/{run_id}/cancel", {})
 
+    def plan_pipeline_revision(self, run_id: str, *, changes: dict[str, Any]) -> dict[str, Any]:
+        """What a re-run with these changes would reuse and run, and its cost. Starts nothing."""
+        return self._request("POST", f"/pipeline/runs/{run_id}/revisions/plan", {"changes": changes})
+
+    def create_pipeline_revision(
+        self,
+        run_id: str,
+        *,
+        changes: dict[str, Any],
+        confirmed: bool = False,
+        callback_url: str | None = None,
+        max_spend_usd: float | None = None,
+    ) -> dict[str, Any]:
+        """Re-run a finished run with changes. Pass confirmed=True once the person agreed to the plan's cost."""
+        body: dict[str, Any] = {"changes": changes, "confirmed": confirmed}
+        if callback_url:
+            body["callback_url"] = callback_url
+        if max_spend_usd is not None:
+            body["max_spend_usd"] = max_spend_usd
+        return self._request("POST", f"/pipeline/runs/{run_id}/revisions", body)
+
     # ── Agent ─────────────────────────────────────────────────────────────────
 
     def invoke_agent(
