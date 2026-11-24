@@ -70,6 +70,13 @@ def _approval_list_path(
     return f"{path}?{httpx.QueryParams(present)}"
 
 
+def _with_query(path: str, filters: dict[str, Any]) -> str:
+    present = {key: value for key, value in filters.items() if value is not None and value != ""}
+    if not present:
+        return path
+    return f"{path}?{httpx.QueryParams(present)}"
+
+
 DEFAULT_BASE_URL = "https://api.fetchhive.com/v1"
 
 
@@ -226,14 +233,18 @@ class FetchHive:
     def invoke_pipeline(
         self,
         *,
-        callback_url: str,
+        callback_url: str | None = None,
         deployment: str | None = None,
         variant: str | None = None,
         pipeline: str | None = None,
         inputs: dict[str, Any] | None = None,
         max_spend_usd: float | None = None,
+        poll: bool = False,
+        notify_checkpoints: bool | None = None,
     ) -> dict[str, Any]:
-        """Start a pipeline run. Always asynchronous: the result goes to callback_url.
+        """Start a pipeline run. Always asynchronous: the result goes to callback_url, or with poll=True you
+        follow it with get_pipeline_run and get_pipeline_checkpoint. notify_checkpoints=False sends no checkpoint
+        email or Telegram message, for an app that shows checkpoints itself.
 
         Name a deployment (and optionally a variant), or a pipeline id to run its default variant.
         Returns {"pipeline_run": {...}}.
@@ -249,8 +260,45 @@ class FetchHive:
             body["inputs"] = inputs
         if max_spend_usd is not None:
             body["max_spend_usd"] = max_spend_usd
-        body["async"] = {"enabled": True, "callback_url": callback_url}
+        if notify_checkpoints is not None:
+            body["notify_checkpoints"] = notify_checkpoints
+        async_config: dict[str, Any] = {"enabled": True, "callback_url": callback_url}
+        if poll:
+            async_config["poll"] = True
+        body["async"] = async_config
         return self._request("POST", "/pipeline/invoke", body)
+
+    def install_pipeline_template(self, template_id: str, *, deployment: str | None = None) -> dict[str, Any]:
+        """Set a pipeline template up in this API key's workspace and deploy it.
+
+        Safe to call before every run: when the workspace has it already, the same pipeline and deployment come
+        back with "installed": False.
+        """
+        body: dict[str, Any] = {}
+        if deployment:
+            body["deployment"] = deployment
+        return self._request("POST", f"/pipeline/templates/{template_id}/install", body)
+
+    def get_pipeline(self, pipeline_id: str, *, variant: str | None = None) -> dict[str, Any]:
+        """A deployed pipeline's start inputs, stages, checkpoints and estimated cost per run."""
+        return self._request("GET", _with_query(f"/pipeline/pipelines/{pipeline_id}", {"variant": variant}))
+
+    def get_pipeline_deployment(self, deployment: str, *, variant: str | None = None) -> dict[str, Any]:
+        """The same as get_pipeline, by deployment key."""
+        return self._request("GET", _with_query(f"/pipeline/deployments/{deployment}", {"variant": variant}))
+
+    def list_pipeline_runs(
+        self,
+        *,
+        pipeline: str | None = None,
+        deployment: str | None = None,
+        status: str | None = None,
+        page: int | None = None,
+        per_page: int | None = None,
+    ) -> dict[str, Any]:
+        """Earlier pipeline runs, newest first, with their start inputs. per_page is up to 50."""
+        filters = {"pipeline": pipeline, "deployment": deployment, "status": status, "page": page, "per_page": per_page}
+        return self._request("GET", _with_query("/pipeline/runs", filters))
 
     def get_pipeline_run(self, run_id: str) -> dict[str, Any]:
         """A pipeline run: status, each step, cost and the output once it has finished."""

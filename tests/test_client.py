@@ -233,6 +233,40 @@ def test_pl2_run_checkpoint_answer_cancel():
     assert cancel.called
 
 
+@respx.mock
+def test_pl3_polled_run_without_callback():
+    """PL3 — poll=True and notify_checkpoints=False, no callback."""
+    respx.post(f"{DEFAULT_BASE}/pipeline/invoke").mock(return_value=httpx.Response(202, json={"pipeline_run": {"id": "run_2"}}))
+    FetchHive(api_key="k").invoke_pipeline(
+        deployment="seo-article", inputs={"keyword": "shoes"}, poll=True, notify_checkpoints=False
+    )
+    assert json.loads(respx.calls.last.request.content) == {
+        "deployment": "seo-article",
+        "inputs": {"keyword": "shoes"},
+        "notify_checkpoints": False,
+        "async": {"enabled": True, "callback_url": None, "poll": True},
+    }
+
+
+@respx.mock
+def test_pl4_template_install_definition_and_runs():
+    """PL4 — template install, definition and run list paths."""
+    install = respx.post(f"{DEFAULT_BASE}/pipeline/templates/tpl_1/install").mock(return_value=httpx.Response(200, json={}))
+    by_id = respx.get(f"{DEFAULT_BASE}/pipeline/pipelines/pipe_1").mock(return_value=httpx.Response(200, json={}))
+    by_name = respx.get(f"{DEFAULT_BASE}/pipeline/deployments/seo-article").mock(return_value=httpx.Response(200, json={}))
+    runs = respx.get(f"{DEFAULT_BASE}/pipeline/runs").mock(return_value=httpx.Response(200, json={}))
+    client = FetchHive(api_key="k")
+    client.install_pipeline_template("tpl_1", deployment="articles")
+    client.get_pipeline("pipe_1")
+    client.get_pipeline_deployment("seo-article", variant="staging")
+    client.list_pipeline_runs(deployment="seo-article", status="completed", per_page=10)
+
+    assert json.loads(install.calls.last.request.content) == {"deployment": "articles"}
+    assert by_id.called
+    assert by_name.calls.last.request.url.params["variant"] == "staging"
+    assert dict(runs.calls.last.request.url.params) == {"deployment": "seo-article", "status": "completed", "per_page": "10"}
+
+
 # ── AG: Agent ──────────────────────────────────────────────────────────────────
 
 
