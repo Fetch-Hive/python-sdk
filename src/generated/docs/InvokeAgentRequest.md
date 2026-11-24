@@ -18,6 +18,9 @@ Name | Type | Description | Notes
 **var_async** | [**AgentInvokeAsyncConfig**](AgentInvokeAsyncConfig.md) |  | [optional] 
 **tool_approval** | **str** | &#x60;policy&#x60; follows workspace rules and any saved auto-approve switch. Omit the field for the same behavior. &#x60;auto_approve&#x60; applies to this call only, and only when the API key is allowed to auto-approve actions. Any other value is &#x60;400 invalid_tool_approval&#x60;. A key without the permission, a signed-in token, or a webhook is &#x60;403 tool_approval_override_not_permitted&#x60; before preflight or billing. Destructive actions still ask. Deny rules still block the action. Sub-agents inherit this value. Workflows the agent starts do not.  | [optional] 
 **decided_tool_approvals** | [**List[InvokeAgentRequestDecidedToolApprovalsInner]**](InvokeAgentRequestDecidedToolApprovalsInner.md) | Approval ids from an earlier &#x60;awaiting_approval&#x60; response. An API key call resumes on the server after the decision. Do not send this field to re-invoke that thread. A first-party streaming client sends &#x60;{ \&quot;approval_id\&quot;: \&quot;&lt;uuid&gt;\&quot; }&#x60; on its next invoke. Only &#x60;approval_id&#x60; is read.  | [optional] 
+**response_format** | [**InvokeAgentRequestResponseFormat**](InvokeAgentRequestResponseFormat.md) |  | [optional] 
+**is_json_schema_response_format** | **bool** | Older flag. Send &#x60;true&#x60; with &#x60;json_schema&#x60; to request JSON. Prefer &#x60;response_format&#x60;.  | [optional] 
+**json_schema** | **Dict[str, object]** | Older schema field used with &#x60;is_json_schema_response_format&#x60;.  | [optional] 
 
 ## Example
 

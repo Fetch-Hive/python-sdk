@@ -7,7 +7,8 @@ Agent response. All fields are optional because the shape differs slightly betwe
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Unique identifier for this invocation. | [optional] 
-**response** | **str** | The agent&#39;s final text response (non-streaming only).  | [optional] 
+**response** | **str** | The agent&#39;s final text response (non-streaming only). When &#x60;response_format&#x60; requested JSON, this is the JSON text.  | [optional] 
+**output_json** | **Dict[str, object]** | Parsed JSON object. Present when this call requested a JSON Schema and the answer matched. Use this instead of parsing &#x60;response&#x60;.  | [optional] 
 **thread_id** | **str** | Caller &#x60;thread_id&#x60;, or null when the invoke did not send one.  (value may be null) | [optional] 
 **status** | **str** | Always present. &#x60;completed&#x60; or &#x60;awaiting_approval&#x60;. With tool approvals disabled this is &#x60;completed&#x60;.  | [optional] 
 **run_id** | **str** | Public request id for this run. Same value as &#x60;request_id&#x60;. | [optional] 

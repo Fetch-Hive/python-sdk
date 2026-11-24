@@ -192,6 +192,47 @@ def test_w4_metadata_passes_through():
     assert body["metadata"] == {"customer_id": "cus_123", "invoice_count": 12}
 
 
+# ── PL: Pipeline ───────────────────────────────────────────────────────────────
+
+
+@respx.mock
+def test_pl1_invoke_pipeline_is_async():
+    """PL1 — invoke_pipeline posts the deployment, variant and an async block with the callback."""
+    respx.post(f"{DEFAULT_BASE}/pipeline/invoke").mock(
+        return_value=httpx.Response(202, json={"pipeline_run": {"id": "run_1", "status": "queued"}})
+    )
+    result = FetchHive(api_key="k").invoke_pipeline(
+        deployment="seo-article", variant="staging", inputs={"keyword": "shoes"}, callback_url="https://example.com/cb"
+    )
+
+    assert result["pipeline_run"]["id"] == "run_1"
+    assert json.loads(respx.calls.last.request.content) == {
+        "deployment": "seo-article",
+        "variant": "staging",
+        "inputs": {"keyword": "shoes"},
+        "async": {"enabled": True, "callback_url": "https://example.com/cb"},
+    }
+
+
+@respx.mock
+def test_pl2_run_checkpoint_answer_cancel():
+    """PL2 — run, checkpoint, answer and cancel paths."""
+    respx.get(f"{DEFAULT_BASE}/pipeline/runs/run_1").mock(return_value=httpx.Response(200, json={}))
+    respx.get(f"{DEFAULT_BASE}/pipeline/runs/run_1/checkpoint").mock(return_value=httpx.Response(200, json={}))
+    answer = respx.post(f"{DEFAULT_BASE}/pipeline/runs/run_1/checkpoint/answer").mock(
+        return_value=httpx.Response(200, json={})
+    )
+    cancel = respx.post(f"{DEFAULT_BASE}/pipeline/runs/run_1/cancel").mock(return_value=httpx.Response(200, json={}))
+    client = FetchHive(api_key="k")
+    client.get_pipeline_run("run_1")
+    client.get_pipeline_checkpoint("run_1")
+    client.answer_pipeline_checkpoint("run_1", answer={"approved": True}, request_id="cp_1")
+    client.cancel_pipeline_run("run_1")
+
+    assert json.loads(answer.calls.last.request.content) == {"answer": {"approved": True}, "request_id": "cp_1"}
+    assert cancel.called
+
+
 # ── AG: Agent ──────────────────────────────────────────────────────────────────
 
 

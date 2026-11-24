@@ -52,6 +52,8 @@ docs/HiveAgentSources.md
 docs/HiveAgentsApi.md
 docs/InvokeAgentRequest.md
 docs/InvokeAgentRequestDecidedToolApprovalsInner.md
+docs/InvokeAgentRequestResponseFormat.md
+docs/InvokeAgentRequestResponseFormatJsonSchema.md
 docs/InvokeAgentResponse.md
 docs/InvokeAgentResponseAutoApprovedToolCallsInner.md
 docs/InvokeHiveAgentRequest.md
@@ -185,6 +187,8 @@ fetch_hive_sdk/models/hive_agent_async_config.py
 fetch_hive_sdk/models/hive_agent_sources.py
 fetch_hive_sdk/models/invoke_agent_request.py
 fetch_hive_sdk/models/invoke_agent_request_decided_tool_approvals_inner.py
+fetch_hive_sdk/models/invoke_agent_request_response_format.py
+fetch_hive_sdk/models/invoke_agent_request_response_format_json_schema.py
 fetch_hive_sdk/models/invoke_agent_response.py
 fetch_hive_sdk/models/invoke_agent_response_auto_approved_tool_calls_inner.py
 fetch_hive_sdk/models/invoke_hive_agent_request.py
@@ -304,6 +308,8 @@ test/test_hive_agent_sources.py
 test/test_hive_agents_api.py
 test/test_invoke_agent_request.py
 test/test_invoke_agent_request_decided_tool_approvals_inner.py
+test/test_invoke_agent_request_response_format.py
+test/test_invoke_agent_request_response_format_json_schema.py
 test/test_invoke_agent_response.py
 test/test_invoke_agent_response_auto_approved_tool_calls_inner.py
 test/test_invoke_hive_agent_request.py

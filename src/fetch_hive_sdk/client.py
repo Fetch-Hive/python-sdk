@@ -221,6 +221,64 @@ class FetchHive:
             resp.raise_for_status()
             return resp.json()
 
+    # ── Pipeline ──────────────────────────────────────────────────────────────
+
+    def invoke_pipeline(
+        self,
+        *,
+        callback_url: str,
+        deployment: str | None = None,
+        variant: str | None = None,
+        pipeline: str | None = None,
+        inputs: dict[str, Any] | None = None,
+        max_spend_usd: float | None = None,
+    ) -> dict[str, Any]:
+        """Start a pipeline run. Always asynchronous: the result goes to callback_url.
+
+        Name a deployment (and optionally a variant), or a pipeline id to run its default variant.
+        Returns {"pipeline_run": {...}}.
+        """
+        body: dict[str, Any] = {}
+        if deployment:
+            body["deployment"] = deployment
+        if variant:
+            body["variant"] = variant
+        if pipeline:
+            body["pipeline"] = pipeline
+        if inputs is not None:
+            body["inputs"] = inputs
+        if max_spend_usd is not None:
+            body["max_spend_usd"] = max_spend_usd
+        body["async"] = {"enabled": True, "callback_url": callback_url}
+        return self._request("POST", "/pipeline/invoke", body)
+
+    def get_pipeline_run(self, run_id: str) -> dict[str, Any]:
+        """A pipeline run: status, each step, cost and the output once it has finished."""
+        return self._request("GET", f"/pipeline/runs/{run_id}")
+
+    def get_pipeline_checkpoint(self, run_id: str) -> dict[str, Any]:
+        """What the run is waiting for at a checkpoint, and the answer shape to send."""
+        return self._request("GET", f"/pipeline/runs/{run_id}/checkpoint")
+
+    def answer_pipeline_checkpoint(
+        self,
+        run_id: str,
+        *,
+        answer: dict[str, Any],
+        request_id: str | None = None,
+        node_key: str | None = None,
+    ) -> dict[str, Any]:
+        """Answer the checkpoint a run is waiting at. request_id is the checkpoint's id you were answering."""
+        body: dict[str, Any] = {"answer": answer}
+        if request_id:
+            body["request_id"] = request_id
+        if node_key:
+            body["node_key"] = node_key
+        return self._request("POST", f"/pipeline/runs/{run_id}/checkpoint/answer", body)
+
+    def cancel_pipeline_run(self, run_id: str) -> dict[str, Any]:
+        return self._request("POST", f"/pipeline/runs/{run_id}/cancel", {})
+
     # ── Agent ─────────────────────────────────────────────────────────────────
 
     def invoke_agent(
